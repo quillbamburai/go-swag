@@ -1,0 +1,463 @@
+/* Go Swag Plus — starter tokens from tokens/tokens.json
+   Grow this file as we build in v0. */
+
+:root {
+  /* Rock */
+  --color-rock-50: #f8f5f2;
+  --color-rock-100: #f0eae4;
+  --color-rock-200: #cdc2bb;
+  --color-rock-300: #b19e93;
+  --color-rock-400: #9a8175;
+  --color-rock-500: #8b7167;
+  --color-rock-600: #775e57;
+  --color-rock-700: #604b48;
+  --color-rock-main-800: #52403f;
+  --color-rock-900: #493a3a;
+  --color-rock-950: #291f20;
+
+  /* Alabaster */
+  --color-alabaster-main-50: #f9f9f9;
+  --color-alabaster-100: #efefef;
+  --color-alabaster-200: #dcdcdc;
+  --color-alabaster-300: #bdbdbd;
+  --color-alabaster-400: #989898;
+  --color-alabaster-500: #656565;
+  --color-alabaster-600: #656565;
+  --color-alabaster-700: #525252;
+  --color-alabaster-800: #464646;
+  --color-alabaster-900: #3d3d3d;
+  --color-alabaster-950: #292929;
+
+  /* Accents */
+  --color-gin-50: #f4f8f7;
+  --color-gin-100: #e5f1ec;
+  --color-gin-200: #b7d8cb;
+  --color-gin-300: #88bdab;
+  --color-gin-400: #4c9370;
+  --color-gin-500: #39b370;
+  --color-gin-600: #35b65a;
+  --color-gin-700: #305b4a;
+  --color-gin-800: #2a453d;
+  --color-gin-900: #263832;
+  --color-gin-950: #1a321e;
+
+  --color-fair-pink-50: #ffecec;
+  --color-fair-pink-100: #fde2e2;
+  --color-fair-pink-200: #fbc8c8;
+  --color-fair-pink-300: #f7a8a8;
+  --color-fair-pink-400: #e89b9b;
+  --color-fair-pink-500: #d87a7a;
+  --color-fair-pink-600: #c45b5b;
+  --color-fair-pink-700: #a34343;
+  --color-fair-pink-800: #873838;
+  --color-fair-pink-900: #703232;
+  --color-fair-pink-950: #3d1717;
+
+  --color-chrome-white-50: #f7faeb;
+  --color-chrome-white-100: #eef5d2;
+  --color-chrome-white-200: #e1eca3;
+  --color-chrome-white-300: #d2e275;
+  --color-chrome-white-400: #c8db75;
+  --color-chrome-white-500: #b2c748;
+  --color-chrome-white-600: #8fa332;
+  --color-chrome-white-700: #6d7d26;
+  --color-chrome-white-800: #576322;
+  --color-chrome-white-900: #4a5420;
+  --color-chrome-white-950: #272e0e;
+
+  --color-aqua-squeeze-50: #eaf7f8;
+  --color-aqua-squeeze-100: #d1eef0;
+  --color-aqua-squeeze-200: #a7dfe4;
+  --color-aqua-squeeze-300: #72c6ce;
+  --color-aqua-squeeze-400: #42aab4;
+  --color-aqua-squeeze-500: #2a8e98;
+  --color-aqua-squeeze-600: #24737d;
+  --color-aqua-squeeze-700: #235d66;
+  --color-aqua-squeeze-800: #224d54;
+  --color-aqua-squeeze-900: #204249;
+  --color-aqua-squeeze-950: #102a30;
+
+  --color-bees-wax-50: #fff7e6;
+  --color-bees-wax-100: #ffedc7;
+  --color-bees-wax-200: #ffe099;
+  --color-bees-wax-300: #f2c063;
+  --color-bees-wax-400: #e5a338;
+  --color-bees-wax-500: #cc841d;
+  --color-bees-wax-600: #a86513;
+  --color-bees-wax-700: #854c13;
+  --color-bees-wax-800: #6e3e16;
+  --color-bees-wax-900: #5b3416;
+  --color-bees-wax-950: #331a0a;
+
+  --color-linen-50: #faf0e6;
+  --color-linen-100: #f3e0d1;
+  --color-linen-200: #e5c2a7;
+  --color-linen-300: #d4ad8e;
+  --color-linen-400: #c08b67;
+  --color-linen-500: #ab6f4a;
+  --color-linen-600: #8e5637;
+  --color-linen-700: #72432b;
+  --color-linen-800: #5f3927;
+  --color-linen-900: #503123;
+  --color-linen-950: #2b1810;
+
+  /* Typography */
+  --font-family-display: var(--font-sora), "Sora", sans-serif;
+  --font-family-body: var(--font-inter), "Inter", sans-serif;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Tracking. Figma percentages map 1:1 onto em. */
+  --letter-spacing-tighter: -0.02em;
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+  --letter-spacing-wider: 0.04em;
+  --letter-spacing-widest: 0.06em;
+  --letter-spacing-docs: -0.015em;
+
+  --text-h1-size: 72px;
+  --text-h1-line-height: 84px;
+  --text-h2-size: 60px;
+  --text-h2-line-height: 64px;
+  --text-h3-size: 48px;
+  --text-h3-line-height: 52px;
+  --text-h4-size: 36px;
+  --text-h4-line-height: 40px;
+  --text-h5-size: 24px;
+  --text-h5-line-height: 28px;
+  --text-h6-size: 20px;
+  --text-h6-line-height: 24px;
+
+  --text-body-large-size: 18px;
+  --text-body-large-line-height: 28px;
+  --text-body-medium-size: 16px;
+  --text-body-medium-line-height: 24px;
+  --text-body-small-size: 14px;
+  --text-body-small-line-height: 20px;
+  --text-caption-size: 12px;
+  --text-caption-line-height: 16px;
+
+  /* Inter paragraph scale. Sizes 2xl → 2xs, tracking per the type sheet. */
+  --text-paragraph-2xl-size: 24px;
+  --text-paragraph-2xl-line-height: 30px;
+  --text-paragraph-2xl-tracking: var(--letter-spacing-tight);
+  --text-paragraph-xl-size: 20px;
+  --text-paragraph-xl-line-height: 28px;
+  --text-paragraph-xl-tracking: var(--letter-spacing-tight);
+  --text-paragraph-l-size: 18px;
+  --text-paragraph-l-line-height: 27px;
+  --text-paragraph-l-tracking: var(--letter-spacing-tight);
+  --text-paragraph-m-size: 16px;
+  --text-paragraph-m-line-height: 24px;
+  --text-paragraph-m-tracking: var(--letter-spacing-tight);
+  --text-paragraph-s-size: 14px;
+  --text-paragraph-s-line-height: 20px;
+  --text-paragraph-s-tracking: var(--letter-spacing-tighter);
+  --text-paragraph-xs-size: 12px;
+  --text-paragraph-xs-line-height: 16px;
+  --text-paragraph-xs-tracking: var(--letter-spacing-tight);
+  --text-paragraph-2xs-size: 10px;
+  --text-paragraph-2xs-line-height: 14px;
+  --text-paragraph-2xs-tracking: var(--letter-spacing-tight);
+
+  /* Button */
+  --text-button-l-size: 16px;
+  --text-button-l-line-height: 20px;
+  --text-button-l-tracking: var(--letter-spacing-tight);
+  --text-button-m-size: 14px;
+  --text-button-m-line-height: 18px;
+  --text-button-m-tracking: var(--letter-spacing-normal);
+  --text-button-s-size: 12px;
+  --text-button-s-line-height: 16px;
+  --text-button-s-tracking: var(--letter-spacing-normal);
+
+  /* Subheading — uppercase, positive tracking */
+  --text-subheading-m-size: 16px;
+  --text-subheading-m-line-height: 24px;
+  --text-subheading-m-tracking: var(--letter-spacing-widest);
+  --text-subheading-s-size: 14px;
+  --text-subheading-s-line-height: 20px;
+  --text-subheading-s-tracking: var(--letter-spacing-widest);
+  --text-subheading-xs-size: 12px;
+  --text-subheading-xs-line-height: 16px;
+  --text-subheading-xs-tracking: var(--letter-spacing-wider);
+  --text-subheading-2xs-size: 11px;
+  --text-subheading-2xs-line-height: 12px;
+  --text-subheading-2xs-tracking: var(--letter-spacing-wide);
+
+  /* Tag */
+  --text-tag-l-size: 14px;
+  --text-tag-l-line-height: 16px;
+  --text-tag-l-tracking: var(--letter-spacing-tight);
+  --text-tag-m-size: 12px;
+  --text-tag-m-line-height: 16px;
+  --text-tag-m-tracking: var(--letter-spacing-tight);
+  --text-tag-s-size: 10px;
+  --text-tag-s-line-height: 14px;
+  --text-tag-s-tracking: var(--letter-spacing-tight);
+
+  /* Docs */
+  --text-docs-label-size: 18px;
+  --text-docs-label-line-height: 32px;
+  --text-docs-label-tracking: var(--letter-spacing-docs);
+  --text-docs-paragraph-size: 18px;
+  --text-docs-paragraph-line-height: 32px;
+  --text-docs-paragraph-tracking: var(--letter-spacing-docs);
+
+  /* Semantic roles */
+  --color-canvas: var(--color-alabaster-main-50);
+  --color-surface: var(--color-rock-50);
+  --color-surface-border: var(--color-alabaster-200);
+  --color-text-primary: var(--color-rock-main-800);
+  --color-text-muted: var(--color-alabaster-500);
+
+  --color-danger: var(--color-fair-pink-600);
+  --color-danger-surface: var(--color-fair-pink-50);
+  --color-warning: var(--color-bees-wax-500);
+  --color-warning-surface: var(--color-bees-wax-50);
+  --color-success: var(--color-gin-600);
+  --color-success-surface: var(--color-gin-50);
+  --color-info: var(--color-aqua-squeeze-600);
+  --color-info-surface: var(--color-aqua-squeeze-50);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+}
+
+html {
+  font-family: var(--font-family-body);
+  font-size: var(--text-body-medium-size);
+  line-height: var(--text-body-medium-line-height);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-rock-main-800);
+  background: var(--color-alabaster-main-50);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-semibold);
+}
+
+h1 {
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line-height);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h2 {
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line-height);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h3 {
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line-height);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h4 {
+  font-size: var(--text-h4-size);
+  line-height: var(--text-h4-line-height);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h5 {
+  font-size: var(--text-h5-size);
+  line-height: var(--text-h5-line-height);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+h6 {
+  font-size: var(--text-h6-size);
+  line-height: var(--text-h6-line-height);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+/* ---------------------------------------------------------------
+   Type utilities. One class per style from the type sheet, so a
+   component applies a complete style rather than reassembling
+   size + line-height + weight + tracking by hand.
+   --------------------------------------------------------------- */
+
+.text-button-l,
+.text-button-m,
+.text-button-s {
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-medium);
+}
+
+.text-button-l {
+  font-size: var(--text-button-l-size);
+  line-height: var(--text-button-l-line-height);
+  letter-spacing: var(--text-button-l-tracking);
+}
+
+.text-button-m {
+  font-size: var(--text-button-m-size);
+  line-height: var(--text-button-m-line-height);
+  letter-spacing: var(--text-button-m-tracking);
+}
+
+.text-button-s {
+  font-size: var(--text-button-s-size);
+  line-height: var(--text-button-s-line-height);
+  letter-spacing: var(--text-button-s-tracking);
+}
+
+.text-subheading-m,
+.text-subheading-s,
+.text-subheading-xs,
+.text-subheading-2xs {
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+}
+
+.text-subheading-m {
+  font-size: var(--text-subheading-m-size);
+  line-height: var(--text-subheading-m-line-height);
+  letter-spacing: var(--text-subheading-m-tracking);
+}
+
+.text-subheading-s {
+  font-size: var(--text-subheading-s-size);
+  line-height: var(--text-subheading-s-line-height);
+  letter-spacing: var(--text-subheading-s-tracking);
+}
+
+.text-subheading-xs {
+  font-size: var(--text-subheading-xs-size);
+  line-height: var(--text-subheading-xs-line-height);
+  letter-spacing: var(--text-subheading-xs-tracking);
+}
+
+.text-subheading-2xs {
+  font-size: var(--text-subheading-2xs-size);
+  line-height: var(--text-subheading-2xs-line-height);
+  letter-spacing: var(--text-subheading-2xs-tracking);
+}
+
+.text-tag-l,
+.text-tag-m,
+.text-tag-s {
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-medium);
+}
+
+.text-tag-l {
+  font-size: var(--text-tag-l-size);
+  line-height: var(--text-tag-l-line-height);
+  letter-spacing: var(--text-tag-l-tracking);
+}
+
+.text-tag-m {
+  font-size: var(--text-tag-m-size);
+  line-height: var(--text-tag-m-line-height);
+  letter-spacing: var(--text-tag-m-tracking);
+}
+
+.text-tag-s {
+  font-size: var(--text-tag-s-size);
+  line-height: var(--text-tag-s-line-height);
+  letter-spacing: var(--text-tag-s-tracking);
+}
+
+.text-paragraph-l,
+.text-paragraph-m,
+.text-paragraph-s,
+.text-paragraph-xs,
+.text-paragraph-2xs {
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-regular);
+}
+
+.text-paragraph-l {
+  font-size: var(--text-paragraph-l-size);
+  line-height: var(--text-paragraph-l-line-height);
+  letter-spacing: var(--text-paragraph-l-tracking);
+}
+
+.text-paragraph-m {
+  font-size: var(--text-paragraph-m-size);
+  line-height: var(--text-paragraph-m-line-height);
+  letter-spacing: var(--text-paragraph-m-tracking);
+}
+
+.text-paragraph-s {
+  font-size: var(--text-paragraph-s-size);
+  line-height: var(--text-paragraph-s-line-height);
+  letter-spacing: var(--text-paragraph-s-tracking);
+}
+
+.text-paragraph-xs {
+  font-size: var(--text-paragraph-xs-size);
+  line-height: var(--text-paragraph-xs-line-height);
+  letter-spacing: var(--text-paragraph-xs-tracking);
+}
+
+.text-paragraph-2xs {
+  font-size: var(--text-paragraph-2xs-size);
+  line-height: var(--text-paragraph-2xs-line-height);
+  letter-spacing: var(--text-paragraph-2xs-tracking);
+}
+
+.text-docs-label {
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-docs-label-size);
+  line-height: var(--text-docs-label-line-height);
+  letter-spacing: var(--text-docs-label-tracking);
+}
+
+.text-docs-paragraph {
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--text-docs-paragraph-size);
+  line-height: var(--text-docs-paragraph-line-height);
+  letter-spacing: var(--text-docs-paragraph-tracking);
+}
+
+/* Tabular figures for any numeric value in a column. */
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hero figure — the single headline number in a panel. Sora H5 from the
+   display scale; no off-scale size is introduced. */
+.text-hero-figure {
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-h5-size);
+  line-height: var(--text-h5-line-height);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.font-regular {
+  font-weight: var(--font-weight-regular);
+}
+
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
