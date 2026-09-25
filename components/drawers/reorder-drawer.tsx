@@ -60,6 +60,14 @@ export function ReorderDrawer({
   const shown = product ?? placed
   if (!shown || typeof document === "undefined") return null
 
+  /** Dismiss: drop the local copy too, or the tray stays mounted once the
+      order is placed. Resets the flow so reopening starts at step one. */
+  const dismiss = () => {
+    setPlaced(null)
+    setStep("order")
+    onClose()
+  }
+
   const sizes = ["S", "M", "L", "XL"] as const
   const mixTotal = sizes.reduce((sum, s) => sum + mix[s], 0)
   const goods = qty * shown.unitPriceGbp
@@ -111,7 +119,7 @@ export function ReorderDrawer({
       <div
         className="drawer-scrim absolute inset-0"
         style={{ background: "rgba(28,28,28,0.32)" }}
-        onClick={onClose}
+        onClick={dismiss}
         aria-hidden
       />
 
@@ -121,7 +129,7 @@ export function ReorderDrawer({
         role="dialog"
         aria-label={`Re-order ${shown.skuName}`}
       >
-        <header className="flex shrink-0 flex-col gap-4 px-6 pb-4 pt-6">
+        <header className="flex shrink-0 flex-col gap-4 px-6 pb-8 pt-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex flex-col gap-1">
               <span className={TYPE.columnHeader} style={{ color: GREY.faint }}>
@@ -133,7 +141,7 @@ export function ReorderDrawer({
             </div>
             <button
               type="button"
-              onClick={onClose}
+              onClick={dismiss}
               aria-label="Close"
               className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-[#F0F0F0]"
               style={{ color: GREY.muted }}
@@ -542,8 +550,8 @@ export function ReorderDrawer({
 
           {step === "done" && (
             <div className="flex items-center gap-2">
-              <Secondary onClick={onClose}>Done</Secondary>
-              <Primary onClick={onClose}>View receipt</Primary>
+              <Secondary onClick={dismiss}>View receipt</Secondary>
+              <Primary onClick={dismiss}>Done</Primary>
             </div>
           )}
         </footer>
