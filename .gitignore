@@ -11,3 +11,6 @@ tsconfig.tsbuildinfo
 # Reference material and client work — kept local, not published.
 design-context/
 brief/
+
+# Verification screenshots taken during development.
+/*.png

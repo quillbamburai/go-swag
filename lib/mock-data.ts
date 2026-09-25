@@ -318,7 +318,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1001",
     recipient: "Amelia Chen",
     destination: "London, UK",
-    campaign: "Q4 Onboarding Batch",
+    campaign: "Onboarding Pack",
+    campaignKind: "pack",
     carrier: "DHL Express",
     method: "Next Day",
     tracking: "15501234567890",
@@ -330,7 +331,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1002",
     recipient: "Marcus Webb",
     destination: "Manchester, UK",
-    campaign: "Q4 Offsite",
+    campaign: "CES 2027",
+    campaignKind: "event",
     carrier: "DPD",
     method: "Tracked 48",
     tracking: "15501234567891",
@@ -342,7 +344,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1003",
     recipient: "Priya Raman",
     destination: "Berlin, DE",
-    campaign: "Partner Summit",
+    campaign: "Promotion Pack",
+    campaignKind: "pack",
     carrier: "DHL Express",
     method: "International",
     tracking: "15501234567892",
@@ -354,7 +357,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1004",
     recipient: "Tom Okafor",
     destination: "Dublin, IE",
-    campaign: "Q4 Onboarding Batch",
+    campaign: "MWC Barcelona",
+    campaignKind: "event",
     carrier: "FedEx",
     method: "International",
     tracking: "15501234567893",
@@ -366,7 +370,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1005",
     recipient: "Sofia Almeida",
     destination: "Lisbon, PT",
-    campaign: "Partner Summit",
+    campaign: "Retirement Pack",
+    campaignKind: "pack",
     carrier: "DHL Express",
     method: "International",
     tracking: "15501234567894",
@@ -378,7 +383,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1006",
     recipient: "James Whitfield",
     destination: "Leeds, UK",
-    campaign: "New Starter Packs",
+    campaign: "SXSW 2027",
+    campaignKind: "event",
     carrier: "DPD",
     method: "Tracked 48",
     tracking: "15501234567895",
@@ -390,7 +396,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1007",
     recipient: "Nina Kowalski",
     destination: "Warsaw, PL",
-    campaign: "Q4 Offsite",
+    campaign: "Onboarding Pack",
+    campaignKind: "pack",
     carrier: "FedEx",
     method: "International",
     tracking: "15501234567896",
@@ -402,7 +409,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1008",
     recipient: "Daniel Park",
     destination: "New York, US",
-    campaign: "Partner Summit",
+    campaign: "CES 2027",
+    campaignKind: "event",
     carrier: "DHL Express",
     method: "International",
     tracking: "15501234567897",
@@ -414,7 +422,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1009",
     recipient: "Hannah Blake",
     destination: "Bristol, UK",
-    campaign: "Q4 Onboarding Batch",
+    campaign: "Promotion Pack",
+    campaignKind: "pack",
     carrier: "DPD",
     method: "Next Day",
     tracking: "15501234567898",
@@ -426,7 +435,8 @@ export const dispatches: Dispatch[] = [
     id: "shp-1010",
     recipient: "Oliver Grant",
     destination: "Edinburgh, UK",
-    campaign: "New Starter Packs",
+    campaign: "SXSW 2027",
+    campaignKind: "event",
     carrier: "DPD",
     method: "Tracked 48",
     tracking: "15501234567899",
@@ -436,17 +446,95 @@ export const dispatches: Dispatch[] = [
   },
 ]
 
-/** Daily outbound volume, last 30 days. Index 0 = 30 days ago. */
-export const dispatchTrend: number[] = [
-  62, 71, 58, 84, 97, 66, 41, 78, 92, 105, 88, 74, 49, 63, 118, 182, 143, 96, 71, 58,
-  84, 112, 134, 121, 88, 67, 52, 79, 104, 96,
+/** Six dispatch streams per month, drawn as a stepped-opacity bar group. */
+export const packStreams: string[] = [
+  "Onboarding",
+  "Promotion",
+  "Retirement",
+  "Events",
+  "Campaigns",
+  "Ad hoc",
 ]
 
-/** Campaign dispatch spikes, plotted against dispatchTrend by index. */
-export const dispatchSpikes: { index: number; label: string; packs: number }[] = [
-  { index: 9, label: "Q4 Onboarding Batch", packs: 105 },
-  { index: 15, label: "London Tech Week", packs: 182 },
-  { index: 22, label: "Partner Summit", packs: 134 },
+/** Monthly dispatch counts, one value per stream. */
+export const monthlyPacks: { month: string; values: number[] }[] = [
+  { month: "Nov 26", values: [91, 80, 134, 105, 85, 63] },
+  { month: "Dec 26", values: [242, 201, 281, 312, 255, 170] },
+  { month: "Jan 27", values: [365, 303, 423, 384, 334, 272] },
+  { month: "Feb 27", values: [188, 164, 232, 205, 171, 120] },
+  { month: "Mar 27", values: [274, 241, 318, 289, 246, 183] },
+  { month: "Apr 27", values: [212, 187, 268, 231, 198, 141] },
+  { month: "May 27", values: [331, 288, 392, 356, 302, 228] },
+  { month: "Jun 27", values: [156, 138, 196, 174, 149, 108] },
+  { month: "Jul 27", values: [298, 262, 349, 318, 271, 205] },
+  { month: "Aug 27", values: [204, 179, 258, 224, 191, 137] },
+  { month: "Sep 27", values: [386, 338, 447, 408, 351, 264] },
+  { month: "Oct 27", values: [248, 218, 312, 276, 235, 172] },
+]
+
+/** Departmental lines drawn over the bars. Each rises and falls more than once
+    across the year, so the curves sweep rather than drift. */
+/**
+ * Department trend lines, taken directly from the "BUILT — Distribution" frame
+ * (Vector 38 / 39 / 40). Each line is a three-segment cubic bezier, stored
+ * normalised: x and y both run 0→1 across the plot, so the same geometry
+ * redraws at any chart size. Values are the Figma path data divided by the
+ * chart group's 1287 × 161 bounds, with each vector's own y-offset folded in
+ * (38 starts 28px down the band, 40 starts 52px down, 39 at the top).
+ */
+export const departmentTrend: {
+  department: string
+  style: "solid" | "light" | "dotted"
+  /** [x, y] anchors and control points, normalised 0→1. */
+  curve: { p0: [number, number]; segs: [number, number, number, number, number, number][] }
+}[] = [
+  {
+    department: "Onboarding",
+    style: "dotted",
+    // Vector 39 — dips to the floor mid-chart, then climbs hard to the ceiling.
+    curve: {
+      p0: [0, 0.4627],
+      segs: [
+        [0.2079, 0.4627, 0.2933, 0.9683, 0.4870, 0.9967],
+        [0.6425, 0.9547, 0.7827, 0.7292, 1, 0.5],
+      ],
+    },
+  },
+  {
+    department: "Promotions",
+    style: "solid",
+    // Vector 38 — the 2px line: rises steeply out of the low left, then flattens.
+    curve: {
+      p0: [0, 0.5416],
+      segs: [
+        [0.2079, 0.5416, 0.2933, 0.2505, 0.4870, 0.1862],
+        [0.6425, 0.1345, 0.7827, 0.2624, 1, 0.2624],
+      ],
+    },
+  },
+  {
+    department: "Retirement",
+    style: "light",
+    // Vector 40 — peaks in the middle, then plunges to the lowest point right.
+    curve: {
+      p0: [0, 0.5391],
+      segs: [
+        [0.2079, 0.5391, 0.2929, 0.3230, 0.4870, 0.3230],
+        [0.6268, 0.3230, 0.7827, 0.6759, 1, 0.6759],
+      ],
+    },
+  },
+]
+
+/** Events view — lead time between order and event date, against factory lead time. */
+export const FACTORY_LEAD_DAYS = 14
+
+export const eventLeadTimes: { event: string; date: string; leadDays: number; packs: number }[] = [
+  { event: "Q4 Onboarding Batch", date: "Oct 11", leadDays: 9, packs: 25 },
+  { event: "Q4 Offsite", date: "Oct 17", leadDays: 21, packs: 60 },
+  { event: "Partner Summit", date: "Nov 04", leadDays: 32, packs: 120 },
+  { event: "New Starter Packs", date: "Nov 18", leadDays: 11, packs: 30 },
+  { event: "London Tech Week", date: "Dec 02", leadDays: 26, packs: 180 },
 ]
 
 /** Outbound share by region. */
@@ -454,4 +542,21 @@ export const geographicSplit: { region: string; share: number }[] = [
   { region: "UK", share: 60 },
   { region: "EU", share: 25 },
   { region: "US", share: 15 },
+]
+
+/** Claim-link completion per pack type — the three donuts in the Claim Links panel. */
+export const claimRates: { label: string; pct: number }[] = [
+  { label: "Onboarding", pct: 87 },
+  { label: "Promotion", pct: 48 },
+  { label: "Retirement", pct: 18 },
+]
+
+/**
+ * Destination split for the Country Location panel. `delta` is the
+ * period-on-period movement shown beside each share.
+ */
+export const countryLocation: { country: string; share: number; delta: number }[] = [
+  { country: "C.Europe", share: 27, delta: 1.2 },
+  { country: "US", share: 23, delta: 3.2 },
+  { country: "UK", share: 50, delta: 2.2 },
 ]

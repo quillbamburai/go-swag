@@ -1,4 +1,4 @@
-import type { Dispatch, DispatchStatus } from "@/lib/types"
+import type { CampaignKind, Dispatch, DispatchStatus } from "@/lib/types"
 import { GREY, TYPE } from "@/components/mid-fidelity"
 import { Panel } from "@/components/inventory/insight-panels"
 
@@ -9,12 +9,24 @@ const STATUS_LABEL: Record<DispatchStatus, string> = {
   preparing: "Preparing",
 }
 
-/** Dot fill encodes status while the palette is still greyscale. */
-const STATUS_DOT: Record<DispatchStatus, string> = {
-  delivered: GREY.text,
-  "in-transit": GREY.muted,
-  preparing: GREY.bar,
-  exception: GREY.text,
+/**
+ * Status colour comes straight from the design system's semantic roles —
+ * no new values. Preparing has no semantic role, so it stays neutral.
+ */
+const STATUS_COLOR: Record<DispatchStatus, { fg: string; bg: string }> = {
+  delivered: { fg: "var(--color-success)", bg: "var(--color-success-surface)" },
+  "in-transit": { fg: "var(--color-info)", bg: "var(--color-info-surface)" },
+  exception: { fg: "var(--color-danger)", bg: "var(--color-danger-surface)" },
+  preparing: { fg: GREY.muted, bg: GREY.well },
+}
+
+/**
+ * Campaign tags separate the two kinds of send. Both pulled from existing
+ * ramps in theme.css rather than introducing new hues.
+ */
+const CAMPAIGN_COLOR: Record<CampaignKind, { fg: string; bg: string }> = {
+  pack: { fg: "var(--color-rock-700)", bg: "var(--color-rock-100)" },
+  event: { fg: "var(--color-aqua-squeeze-600)", bg: "var(--color-aqua-squeeze-100)" },
 }
 
 /**
@@ -36,9 +48,11 @@ export function DispatchTable({
     : ["Recipient", "Destination", "Campaign", "Carrier & method", "Tracking", "Status", "Dispatched"]
 
   return (
-    <Panel label="Orders in transit" onExpand={onSwitchView}>
-      <div className="mt-5 min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <table className="w-full border-collapse">
+    <Panel label="Orders in transit" showExpand={false}>
+      {/* pb-4 so the scroll ends clear of the last row rather than slicing it
+          against the panel edge. */}
+      <div className="mt-5 min-h-0 w-full min-w-0 flex-1 overflow-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <table className="w-full min-w-[1100px] border-collapse">
           <thead>
             <tr>
               {columns.map((heading) => (
@@ -84,7 +98,10 @@ export function DispatchTable({
                 <td>
                   <span
                     className={`inline-block rounded-full px-2 py-[3px] ${TYPE.columnHeader}`}
-                    style={{ background: GREY.well, color: GREY.text }}
+                    style={{
+                      background: CAMPAIGN_COLOR[dispatch.campaignKind].bg,
+                      color: CAMPAIGN_COLOR[dispatch.campaignKind].fg,
+                    }}
                   >
                     {dispatch.campaign}
                   </span>
@@ -111,12 +128,7 @@ export function DispatchTable({
                   >
                     <span
                       className="h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{
-                        background: STATUS_DOT[dispatch.status],
-                        outline:
-                          dispatch.status === "exception" ? `1.5px solid ${GREY.text}` : undefined,
-                        outlineOffset: dispatch.status === "exception" ? "1.5px" : undefined,
-                      }}
+                      style={{ background: STATUS_COLOR[dispatch.status].fg }}
                     />
                     {STATUS_LABEL[dispatch.status]}
                   </span>

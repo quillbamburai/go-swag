@@ -111,6 +111,8 @@
   --font-weight-bold: 700;
 
   /* Tracking. Figma percentages map 1:1 onto em. */
+  /* Display numerals only — large figures need tighter tracking than text. */
+  --letter-spacing-tightest: -0.09em;
   --letter-spacing-tighter: -0.02em;
   --letter-spacing-tight: -0.01em;
   --letter-spacing-normal: 0;

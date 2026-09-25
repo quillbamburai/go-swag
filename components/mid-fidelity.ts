@@ -23,6 +23,13 @@ export const GREY = {
 export const GRADIENT = "linear-gradient(90deg, #E2617A 0%, #B56CC4 55%, #9B6BEE 100%)"
 
 /**
+ * Chart accent — chrome-white/500 from the design system. The one bright ramp
+ * carrying no status meaning, so volume data reads as energy rather than as
+ * success or warning. Replaces a sampled #458C95 that was never in the system.
+ */
+export const CHART_ACCENT = "var(--color-chrome-white-500)"
+
+/**
  * Type roles → design-system styles. Seven jobs, six styles, all from the
  * Swag type sheet. Components reference these class names; nothing sets
  * font-size, line-height or tracking by hand.

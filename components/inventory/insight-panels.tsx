@@ -4,7 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import type { Campaign, Product } from "@/lib/types"
 import { dispatchVelocity, forecastWeeks } from "@/lib/mock-data"
-import { GREY, TYPE, ROW_VALUE_WIDTH } from "@/components/mid-fidelity"
+import { GREY, TYPE, ROW_VALUE_WIDTH, CHART_ACCENT } from "@/components/mid-fidelity"
+import { DataTooltip, useHoverIndex } from "@/components/data-tooltip"
 
 export function InsightPanels({ products, campaigns }: { products: Product[]; campaigns: Campaign[] }) {
   return (
@@ -29,10 +30,13 @@ export function Panel({
   label,
   children,
   onExpand,
+  showExpand = true,
 }: {
   label: string
   children: React.ReactNode
   onExpand?: () => void
+  /** Set false to drop the expand arrow from the panel header. */
+  showExpand?: boolean
 }) {
   return (
     <section
@@ -45,9 +49,11 @@ export function Panel({
           <PanelIconButton label={`Filter ${label}`}>
             <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
           </PanelIconButton>
-          <PanelIconButton label={`Expand ${label}`} onClick={onExpand}>
-            <path d="M7 17 17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" />
-          </PanelIconButton>
+          {showExpand && (
+            <PanelIconButton label={`Expand ${label}`} onClick={onExpand}>
+              <path d="M7 17 17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" />
+            </PanelIconButton>
+          )}
         </div>
       </div>
       {children}
@@ -80,7 +86,7 @@ export function PanelIconButton({
 }
 
 function ForecastPanel() {
-  const [hovered, setHovered] = useState<number | null>(null)
+  const { index: hovered, anchor, bind } = useHoverIndex()
   /** Fixed ceiling above the real max so bars never reach the top of the plot. */
   const peak = 200
   const total = forecastWeeks.reduce((sum, n) => sum + n, 0)
@@ -125,31 +131,27 @@ function ForecastPanel() {
                 key={i}
                 className="group relative flex h-full shrink-0 cursor-default items-end justify-center"
                 style={{ width: 4 }}
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered(null)}
+                {...bind(i)}
               >
                 <div
-                  className="w-[4px] rounded-full transition-colors"
+                  className="w-[4px] transition-colors"
                   style={{
                     height: `${(value / peak) * 100}%`,
                     background:
-                      active === i ? GREY.text : i >= forecastWeeks.length / 2 ? GREY.muted : GREY.bar,
+                      active === i ? GREY.text : i >= forecastWeeks.length / 2 ? CHART_ACCENT : GREY.bar,
                   }}
                 />
-                {active === i && (
-                  <div
-                    className="pointer-events-none absolute -top-1 left-1/2 flex -translate-x-1/2 -translate-y-full flex-col items-center gap-0.5 whitespace-nowrap rounded-lg px-2 py-1.5"
-                    style={{ background: GREY.text, color: GREY.panel }}
-                  >
-                    <span className={TYPE.rowValue}>{value} units</span>
-                    <span className={TYPE.columnHeader} style={{ opacity: 0.7 }}>
-                      Day {i + 1}
-                    </span>
-                  </div>
-                )}
               </div>
             ))}
           </div>
+
+          {hovered !== null && (
+            <DataTooltip
+              anchor={anchor}
+              value={`${forecastWeeks[hovered]} units`}
+              detail={`Day ${hovered + 1}`}
+            />
+          )}
 
           <div className={`mt-1.5 flex h-4 justify-between ${TYPE.meta}`} style={{ color: GREY.faint }}>
             <span>Wk 1</span>
@@ -193,6 +195,8 @@ export function RangeToggle({
 }
 
 function EventsPanel({ campaigns }: { campaigns: Campaign[] }) {
+  const { index: hovered, anchor, bind } = useHoverIndex()
+
   return (
     <Panel label="Events">
       <div
@@ -207,8 +211,9 @@ function EventsPanel({ campaigns }: { campaigns: Campaign[] }) {
         {campaigns.map((campaign, i) => (
           <li
             key={campaign.id}
-            className="shrink-0 flex flex-col gap-1.5 py-2.5 first:pt-0"
+            className="shrink-0 flex cursor-default flex-col gap-1.5 py-2.5 first:pt-0"
             style={{ borderTop: i === 0 ? "none" : `1px solid ${GREY.hairline}` }}
+            {...bind(i)}
           >
             <div className="flex items-baseline justify-between gap-2">
               <span
@@ -243,6 +248,14 @@ function EventsPanel({ campaigns }: { campaigns: Campaign[] }) {
           </li>
         ))}
       </ul>
+
+      {hovered !== null && (
+        <DataTooltip
+          anchor={anchor}
+          value={`${campaigns[hovered].claimed} of ${campaigns[hovered].total} claimed`}
+          detail={`Event ${campaigns[hovered].eventDate}`}
+        />
+      )}
     </Panel>
   )
 }
@@ -252,6 +265,7 @@ function MostPopularPanel({ products }: { products: Product[] }) {
     .map((product) => ({ product, sold: dispatchVelocity[product.id] ?? 0 }))
     .sort((a, b) => b.sold - a.sold)
   const peak = ranked[0]?.sold ?? 1
+  const { index: hovered, anchor, bind } = useHoverIndex()
 
   return (
     <Panel label="Most Popular">
@@ -267,8 +281,9 @@ function MostPopularPanel({ products }: { products: Product[] }) {
         {ranked.map(({ product, sold }, i) => (
           <li
             key={product.id}
-            className="shrink-0 flex items-center gap-3 py-2.5 first:pt-0"
+            className="shrink-0 flex cursor-default items-center gap-3 py-2.5 first:pt-0"
             style={{ borderTop: i === 0 ? "none" : `1px solid ${GREY.hairline}` }}
+            {...bind(i)}
           >
             <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg" style={{ background: GREY.well }}>
               <Image src={product.thumbnailSrc} alt="" fill sizes="48px" className="object-contain p-1" />
@@ -298,6 +313,14 @@ function MostPopularPanel({ products }: { products: Product[] }) {
           </li>
         ))}
       </ul>
+
+      {hovered !== null && ranked[hovered] && (
+        <DataTooltip
+          anchor={anchor}
+          value={`${ranked[hovered].sold} delivered`}
+          detail={ranked[hovered].product.skuName}
+        />
+      )}
     </Panel>
   )
 }
@@ -308,87 +331,133 @@ const POSTAGE_CATEGORIES = [
   { label: "Standard", value: 1216.8, shipments: 968 },
   { label: "International", value: 704.25, shipments: 143 },
   { label: "Tracked 48", value: 358.4, shipments: 286 },
+  { label: "Special", value: 118.9, shipments: 24 },
 ]
 
+const BAR_LABEL: React.CSSProperties = {
+  fontFamily: "var(--font-family-body)",
+  fontSize: "12px",
+  lineHeight: "20px",
+  writingMode: "vertical-rl",
+  transform: "translateX(-50%) rotate(180deg)",
+}
+
 function PostagePanel() {
-  const [hovered, setHovered] = useState<number | null>(null)
+  const { index: hovered, anchor, bind } = useHoverIndex()
   const total = POSTAGE_CATEGORIES.reduce((sum, c) => sum + c.value, 0)
-  const ceiling = Math.max(...POSTAGE_CATEGORIES.map((c) => c.value)) * 1.15
+
+  /** Axis steps derived from the data, rounded up to a clean interval.
+      The ceiling sits just above the tallest bar so bars fill the plot. */
+  const peak = Math.max(...POSTAGE_CATEGORIES.map((c) => c.value))
+  const step = 500
+  const ceiling = Math.ceil(peak / step) * step
+  /** Skip the ceiling line itself; the tallest bar already marks that level. */
+  const ticks = Array.from({ length: ceiling / step - 1 }, (_, i) => ceiling - (i + 1) * step)
+  const money = (v: number) =>
+    v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   return (
     <Panel label="Postage">
-      <div className="mt-3 flex shrink-0 flex-col gap-0.5">
-        <p className={TYPE.heroFigure} style={{ color: GREY.text }}>
-          £{total.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      <div className="mt-4 flex shrink-0 flex-col gap-3">
+        <p
+          className="numeric"
+          style={{
+            fontFamily: "var(--font-family-display)",
+            fontWeight: "var(--font-weight-medium)",
+            fontSize: "var(--text-h4-size)",
+            lineHeight: "var(--text-h4-line-height)",
+            letterSpacing: "var(--letter-spacing-tight)",
+            color: GREY.text,
+          }}
+        >
+          £{money(total)}
         </p>
-        <p className={TYPE.meta} style={{ color: GREY.muted }}>Accumulated this month</p>
+        <p className={TYPE.meta} style={{ color: GREY.muted }}>
+          Accumulated this month
+        </p>
       </div>
 
-      <div className="mt-8 flex min-h-0 flex-1 flex-col">
-        <div
-          className="flex shrink-0 items-baseline gap-3 pb-2"
-          style={{ borderBottom: `1px solid ${GREY.hairline}` }}
-        >
-          <span className={`w-[86px] shrink-0 ${TYPE.columnHeader}`} style={{ color: GREY.faint }}>
-            Tier
-          </span>
-          <div className="flex-1" />
-          <span
-            className={`shrink-0 text-right ${TYPE.columnHeader}`}
-            style={{ color: GREY.faint, width: ROW_VALUE_WIDTH }}
-          >
-            Spend
-          </span>
+      <div className="mt-5 flex justify-end">
+        <span className={TYPE.columnHeader} style={{ color: GREY.faint }}>
+          Spend
+        </span>
+      </div>
+
+      <div className="relative mt-2 min-h-0 flex-1">
+        {/* Gridlines with the value axis on the right. */}
+        <div className="absolute inset-0 flex flex-col justify-between">
+          {ticks.map((tick) => (
+            <div key={tick} className="flex items-center gap-2">
+              <div className="h-px flex-1" style={{ background: GREY.hairline }} />
+              <span
+                className={`shrink-0 ${TYPE.meta}`}
+                style={{ color: GREY.faint, fontSize: "10px", lineHeight: "12px" }}
+              >
+                £{(tick / 1000).toLocaleString("en-GB", { maximumFractionDigits: 1 })}k
+              </span>
+            </div>
+          ))}
         </div>
 
-        <ul className="flex min-h-0 flex-1 flex-col justify-around">
-          {POSTAGE_CATEGORIES.map((category, i) => (
-            <li
-              key={category.label}
-              className="relative flex cursor-default items-center gap-3"
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
-            >
-              <span
-                className={`w-[86px] shrink-0 truncate ${TYPE.meta} ${hovered === i ? "font-medium" : ""}`}
-                style={{ color: hovered === i ? GREY.text : GREY.muted }}
+        {/* Bars sit on a shared baseline, inset from the axis column. */}
+        <div className="absolute inset-y-0 left-0 right-12 flex items-end gap-1">
+          {POSTAGE_CATEGORIES.map((category, i) => {
+            const pct = (category.value / ceiling) * 100
+            return (
+              <div
+                key={category.label}
+                className="relative flex h-full w-[38px] shrink-0 cursor-default items-end"
+                {...bind(i)}
               >
-                {category.label}
-              </span>
+                <div
+                  className="w-full transition-opacity"
+                  style={{
+                    height: `${pct}%`,
+                    background: CHART_ACCENT,
+                    opacity: hovered === null || hovered === i ? 1 : 0.55,
+                  }}
+                />
 
-              <div className="relative flex-1">
-                <div className="h-[3px] w-full overflow-hidden rounded-full" style={{ background: GREY.bar }}>
-                  <div
-                    className="h-full rounded-full transition-colors"
-                    style={{
-                      width: `${(category.value / ceiling) * 100}%`,
-                      background: GREY.text,
-                    }}
-                  />
-                </div>
-
-                {hovered === i && (
-                  <div
-                    className="pointer-events-none absolute -top-1.5 left-1/2 z-10 flex -translate-x-1/2 -translate-y-full flex-col items-center gap-0.5 whitespace-nowrap rounded-lg px-2.5 py-1.5"
-                    style={{ background: GREY.text, color: GREY.panel }}
+                {/* The label reads bottom-to-top from the bar's foot. A short bar
+                    lets it run past the top, so it is drawn twice: dark for the
+                    part over the panel, white for the part over the bar. */}
+                <span
+                  className="pointer-events-none absolute bottom-2 left-1/2 whitespace-nowrap"
+                  style={{ ...BAR_LABEL, color: GREY.text }}
+                >
+                  {category.label}
+                </span>
+                <span
+                  className="pointer-events-none absolute bottom-0 left-0 w-full overflow-hidden"
+                  style={{ height: `${pct}%` }}
+                  aria-hidden
+                >
+                  <span
+                    className="absolute bottom-2 left-1/2 whitespace-nowrap"
+                    style={{ ...BAR_LABEL, color: "#FFFFFF" }}
                   >
-                    <span className={TYPE.rowValue}>{category.shipments} shipments</span>
-                    <span className={TYPE.columnHeader} style={{ opacity: 0.7 }}>
-                      £{(category.value / category.shipments).toFixed(2)} avg
-                    </span>
-                  </div>
-                )}
-              </div>
+                    {category.label}
+                  </span>
+                </span>
 
-              <span
-                className={`shrink-0 text-right ${TYPE.rowValue}`}
-                style={{ width: ROW_VALUE_WIDTH, color: GREY.text }}
-              >
-                £{category.value.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-            </li>
-          ))}
-        </ul>
+              </div>
+            )
+          })}
+        </div>
+
+        {hovered !== null && (
+          <DataTooltip
+            anchor={anchor}
+            value={`£${money(POSTAGE_CATEGORIES[hovered].value)}`}
+            detail={`${POSTAGE_CATEGORIES[hovered].shipments} shipments`}
+          />
+        )}
+      </div>
+
+      <div className="mt-2 flex shrink-0">
+        <span className={TYPE.columnHeader} style={{ color: GREY.faint }}>
+          Tier
+        </span>
       </div>
     </Panel>
   )

@@ -1,5 +1,5 @@
 import "./globals.css"
-import { Sora, Inter } from "next/font/google"
+import { Sora, Inter, Inter_Tight } from "next/font/google"
 
 const sora = Sora({
   subsets: ["latin"],
@@ -13,6 +13,13 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 })
 
+/** Used by the Distribution metric panels, per the Figma components. */
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--font-inter-tight",
+  weight: ["400", "500", "600"],
+})
+
 /**
  * Plus shell. Load Sora + Inter. Render AppHeader.
  * Spec: brief/product-architecture.md
@@ -24,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${sora.variable} ${inter.variable}`}>
+    <html lang="en" className={`${sora.variable} ${inter.variable} ${interTight.variable}`}>
       <body>{children}</body>
     </html>
   )

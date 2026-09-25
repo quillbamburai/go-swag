@@ -40,11 +40,15 @@ export type Campaign = {
 
 export type DispatchStatus = "in-transit" | "delivered" | "exception" | "preparing"
 
+/** Packs are recurring employee lifecycle sends; events are one-off conference shipments. */
+export type CampaignKind = "pack" | "event"
+
 export type Dispatch = {
   id: string
   recipient: string
   destination: string
   campaign: string
+  campaignKind: CampaignKind
   carrier: string
   method: string
   tracking: string
