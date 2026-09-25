@@ -52,12 +52,17 @@ export default function Page() {
           <div className="flex items-center justify-between gap-4 pb-4">
             <div className="flex-1" />
             <HubSwitcher activeHub={activeHub} onHubChange={setActiveHub} />
+            {/* Distribution renders A-Z and Filter beside its hero figure. */}
             <div className="flex flex-1 items-center justify-end gap-2">
-              <ViewToggle view={view} onViewChange={setView} />
-              <AlphaFilter />
-              <div className="ml-6">
-                <FilterButton />
-              </div>
+              {activeHub === "inventory" && (
+                <>
+                  <ViewToggle view={view} onViewChange={setView} />
+                  <AlphaFilter />
+                  <div className="ml-6">
+                    <FilterButton />
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

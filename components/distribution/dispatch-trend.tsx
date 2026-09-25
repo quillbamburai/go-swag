@@ -11,6 +11,7 @@ import {
 import { GREY, TYPE, CHART_ACCENT } from "@/components/mid-fidelity"
 import { DataTooltip, useHoverIndex } from "@/components/data-tooltip"
 import { RangeToggle } from "@/components/inventory/insight-panels"
+import { AlphaFilter, FilterButton } from "@/components/inventory/inventory-hub"
 
 type View = "packs" | "events"
 
@@ -128,19 +129,26 @@ function PacksView() {
           <h2 className={`mb-[21px] ${TYPE.panelTitle}`} style={{ color: GREY.faint }}>
             Dispatches over time
           </h2>
-          <p
-            className="mb-[11px] numeric"
-            style={{
-              fontFamily: "var(--font-family-display)",
-              fontWeight: "var(--font-weight-medium)",
-              fontSize: "var(--text-h3-size)",
-              lineHeight: "var(--text-h3-line-height)",
-              letterSpacing: "var(--letter-spacing-tightest)",
-              color: GREY.text,
-            }}
-          >
-            {total.toLocaleString()}
-          </p>
+          {/* Controls sit level with the figure, per the v4 frame. */}
+          <div className="mb-[11px] flex items-center gap-4">
+            <p
+              className="numeric"
+              style={{
+                fontFamily: "var(--font-family-display)",
+                fontWeight: "var(--font-weight-medium)",
+                fontSize: "var(--text-h3-size)",
+                lineHeight: "var(--text-h3-line-height)",
+                letterSpacing: "var(--letter-spacing-tightest)",
+                color: GREY.text,
+              }}
+            >
+              {total.toLocaleString()}
+            </p>
+            <span className="pointer-events-auto mt-2.5 flex items-center gap-2">
+              <AlphaFilter />
+              <FilterButton />
+            </span>
+          </div>
           <p className={TYPE.meta} style={{ color: GREY.muted }}>
             Units shipped · rolling 12 months
           </p>
