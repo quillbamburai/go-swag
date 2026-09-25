@@ -74,7 +74,10 @@ export default function Page() {
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden" style={{ background: GREY.canvas }}>
+    <div
+      className="flex flex-col"
+      style={{ height: "100dvh", minHeight: 720, background: GREY.canvas }}
+    >
       <div className="flex min-h-0 flex-1 gap-4 p-4">
         <IconRail />
 

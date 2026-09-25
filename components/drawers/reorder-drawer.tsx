@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { createPortal } from "react-dom"
 import type { Campaign, Product } from "@/lib/types"
-import { ukSizingMix, campaigns, packMembership } from "@/lib/mock-data"
+import { ukSizingMix, campaigns, packMembership, deliveryAddresses } from "@/lib/mock-data"
 import { GREY, TYPE } from "@/components/mid-fidelity"
 import { LeadTimeWarning } from "@/components/states/lead-time-warning"
 
@@ -27,6 +27,11 @@ export function ReorderDrawer({
   const [qty, setQty] = useState(100)
   const [mix, setMix] = useState(ukSizingMix)
   const [phase, setPhase] = useState<"editing" | "working">("editing")
+  const [addressId, setAddressId] = useState(deliveryAddresses[0].id)
+  /** New addresses live for the session — enough to show the path works. */
+  const [added, setAdded] = useState<typeof deliveryAddresses>([])
+  const [adding, setAdding] = useState(false)
+  const [draft, setDraft] = useState({ label: "", detail: "" })
 
   if (!product || typeof document === "undefined") return null
 
@@ -42,6 +47,19 @@ export function ReorderDrawer({
       committed.includes(c.name) && c.eventDate !== null,
     )
     .sort((a, b) => dayOfYear(a.eventDate) - dayOfYear(b.eventDate))[0]
+
+  const options = [...deliveryAddresses, ...added]
+
+  const saveAddress = () => {
+    const label = draft.label.trim()
+    const detail = draft.detail.trim()
+    if (!label || !detail) return
+    const entry = { id: `custom-${Date.now()}`, label, detail, kind: "office" as const }
+    setAdded((prev) => [...prev, entry])
+    setAddressId(entry.id)
+    setAdding(false)
+    setDraft({ label: "", detail: "" })
+  }
 
   const approve = () => {
     setPhase("working")
@@ -197,6 +215,109 @@ export function ReorderDrawer({
                 £{total.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </span>
+          </section>
+
+          {/* Where it ships to. The warehouse is the default; an office can be
+              chosen instead, or a new address added. */}
+          <section className="flex flex-col gap-2.5">
+            <div className="flex items-baseline justify-between">
+              <span className={TYPE.columnHeader} style={{ color: GREY.faint }}>
+                Deliver to
+              </span>
+              {!adding && (
+                <button
+                  type="button"
+                  onClick={() => setAdding(true)}
+                  className={`transition-opacity hover:opacity-70 ${TYPE.meta}`}
+                  style={{ color: GREY.text, textDecoration: "underline" }}
+                >
+                  Add new
+                </button>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              {options.map((a) => {
+                const on = a.id === addressId
+                return (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => setAddressId(a.id)}
+                    className="flex items-start gap-2.5 rounded-xl px-3 py-2.5 text-left transition-colors"
+                    style={{
+                      background: on ? GREY.well : "transparent",
+                      outline: on ? `1.5px solid ${GREY.text}` : `1px solid ${GREY.hairline}`,
+                    }}
+                  >
+                    <span
+                      className="mt-[3px] flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full"
+                      style={{ border: `1.5px solid ${on ? GREY.text : GREY.bar}` }}
+                    >
+                      {on && (
+                        <span
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ background: GREY.text }}
+                        />
+                      )}
+                    </span>
+                    <span className="flex min-w-0 flex-col gap-0.5">
+                      <span className={TYPE.rowValue} style={{ color: GREY.text }}>
+                        {a.label}
+                      </span>
+                      <span className={TYPE.meta} style={{ color: GREY.muted }}>
+                        {a.detail}
+                      </span>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {adding && (
+              <div
+                className="flex flex-col gap-2 rounded-xl px-3 py-3"
+                style={{ outline: `1px solid ${GREY.hairline}` }}
+              >
+                <input
+                  autoFocus
+                  value={draft.label}
+                  onChange={(e) => setDraft({ ...draft, label: e.target.value })}
+                  placeholder="Name, e.g. Bristol office"
+                  className={`rounded-lg px-2.5 py-2 outline-none ${TYPE.rowValue}`}
+                  style={{ background: GREY.well, color: GREY.text }}
+                />
+                <input
+                  value={draft.detail}
+                  onChange={(e) => setDraft({ ...draft, detail: e.target.value })}
+                  placeholder="Street, city, postcode"
+                  className={`rounded-lg px-2.5 py-2 outline-none ${TYPE.meta}`}
+                  style={{ background: GREY.well, color: GREY.text }}
+                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={saveAddress}
+                    disabled={!draft.label.trim() || !draft.detail.trim()}
+                    className={`rounded-lg px-3 py-1.5 transition-opacity hover:opacity-90 disabled:opacity-40 ${TYPE.control}`}
+                    style={{ background: GREY.text, color: GREY.panel }}
+                  >
+                    Save address
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAdding(false)
+                      setDraft({ label: "", detail: "" })
+                    }}
+                    className={`rounded-lg px-3 py-1.5 transition-opacity hover:opacity-70 ${TYPE.control}`}
+                    style={{ color: GREY.muted }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </section>
 
           {nextEvent && (

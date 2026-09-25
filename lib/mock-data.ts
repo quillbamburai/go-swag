@@ -580,3 +580,31 @@ export const countryLocation: { country: string; share: number; delta: number }[
   { country: "US", share: 23, delta: 3.2 },
   { country: "UK", share: 50, delta: 2.2 },
 ]
+
+/** Where a re-order can be delivered. The warehouse is the default: stock
+    lands there and is picked into packs from there. */
+export const deliveryAddresses: {
+  id: string
+  label: string
+  detail: string
+  kind: "warehouse" | "office"
+}[] = [
+  {
+    id: "goswag-warehouse",
+    label: "Go Swag warehouse",
+    detail: "Unit 7, Trafford Park · Manchester M17 1AB",
+    kind: "warehouse",
+  },
+  {
+    id: "london-office",
+    label: "London office",
+    detail: "48 Rivington Street · London EC2A 3QP",
+    kind: "office",
+  },
+  {
+    id: "manchester-office",
+    label: "Manchester office",
+    detail: "12 Deansgate · Manchester M3 2FF",
+    kind: "office",
+  },
+]
