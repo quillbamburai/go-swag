@@ -287,12 +287,9 @@ function EventsPanel({ campaigns }: { campaigns: Campaign[] }) {
 }
 
 function MostPopularPanel({ products }: { products: Product[] }) {
-  /* Top ten: a ranking is about the leaders, and ten rows fit the panel
-     without the tail being hidden behind a scroll. */
   const ranked = [...products]
     .map((product) => ({ product, sold: dispatchVelocity[product.id] ?? 0 }))
     .sort((a, b) => b.sold - a.sold)
-    .slice(0, 10)
   const peak = ranked[0]?.sold ?? 1
   const { index: hovered, anchor, bind } = useHoverIndex()
 
@@ -310,14 +307,12 @@ function MostPopularPanel({ products }: { products: Product[] }) {
         {ranked.map(({ product, sold }, i) => (
           <li
             key={product.id}
-            className="shrink-0 flex cursor-default items-center gap-2.5 py-1.5 first:pt-0"
+            className="shrink-0 flex cursor-default items-center gap-3 py-2.5 first:pt-0"
             style={{ borderTop: i === 0 ? "none" : `1px solid ${GREY.hairline}` }}
             {...bind(i)}
           >
-            {/* 32px keeps the whole ranking on screen — at 48 the list ran
-                past the panel and the last SKUs could only be scrolled to. */}
-            <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg" style={{ background: GREY.well }}>
-              <Image src={product.thumbnailSrc} alt="" fill sizes="32px" className="object-contain p-1" />
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg" style={{ background: GREY.well }}>
+              <Image src={product.thumbnailSrc} alt="" fill sizes="48px" className="object-contain p-1" />
             </div>
 
             <div className="flex min-w-0 flex-1 flex-col gap-1">

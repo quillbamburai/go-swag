@@ -74,10 +74,7 @@ export default function Page() {
   }
 
   return (
-    <div
-      className="flex flex-col"
-      style={{ height: "100dvh", minHeight: 720, background: GREY.canvas }}
-    >
+    <div className="flex h-screen flex-col overflow-hidden" style={{ background: GREY.canvas }}>
       <div className="flex min-h-0 flex-1 gap-4 p-4">
         <IconRail />
 
@@ -102,14 +99,14 @@ export default function Page() {
               /* pt-8 replaces the separation the old control row used to give;
                  without it "Warehouse" sits hard under the tabs. */
               <div className="flex min-h-0 flex-1 flex-col gap-6 pt-8">
-                <div className="flex min-h-0 shrink-0 flex-col gap-2.5">
+                <div className="flex shrink-0 flex-col gap-2.5">
                   <div className="flex shrink-0 items-baseline justify-between">
                     <h2 className={TYPE.panelTitle} style={{ color: GREY.faint }}>Warehouse</h2>
                     <span className={TYPE.columnHeader} style={{ color: GREY.faint }}>
                       {products.length} SKUs
                     </span>
                   </div>
-                  <div className="min-h-[248px] flex-[0_1_340px]">
+                  <div className="h-[340px] shrink-0">
                     {view === "box" ? (
                       <InventoryHub
                         products={products}
@@ -129,11 +126,11 @@ export default function Page() {
 
                 {/* Fixed height so the panels don't stretch to swallow
                     leftover vertical space when anything above them changes. */}
-                <div className="flex min-h-0 flex-1 flex-col gap-2.5">
+                <div className="flex shrink-0 flex-col gap-2.5">
                   <h2 className={`shrink-0 ${TYPE.panelTitle}`} style={{ color: GREY.faint }}>
                     Insights
                   </h2>
-                  <div className="min-h-0 flex-1">
+                  <div className="h-[434px] shrink-0">
                     <InsightPanels products={products} campaigns={campaigns} />
                   </div>
                 </div>

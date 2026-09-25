@@ -61,7 +61,7 @@ export function DistributionHub({
         {/* Right column — hold banner above the metric panels, same width.
             mt-12 sets a 48px gap below the Create button, independent of the
             chart column's own top alignment. */}
-        <div className="mt-12 flex min-h-0 flex-1 flex-col gap-3">
+        <div className="mt-12 flex min-h-0 flex-col gap-3">
           {held && (
             <div className="shrink-0">
               <PackHoldAlert
@@ -71,7 +71,7 @@ export function DistributionHub({
               />
             </div>
           )}
-          <div className="panel-scroll flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1">
+          <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <ClaimLinksPanel campaigns={campaigns} />
             <CountryLocationPanel />
             <CarrierPanel dispatches={dispatches} />

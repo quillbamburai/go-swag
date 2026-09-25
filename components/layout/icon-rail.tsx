@@ -142,26 +142,22 @@ export function IconRail() {
         className="mb-8 h-11 w-11 shrink-0 rounded-xl"
       />
 
-      {/* Scrolls rather than overflowing: on a short viewport the icon list is
-          what gives way, never the profile pinned below it. */}
-      <div className="rail-scroll flex min-h-0 flex-1 flex-col items-center gap-1.5 overflow-y-auto">
-        {WORK.map((s) => (
-          <Item key={s.id} section={s} />
-        ))}
+      {WORK.map((s) => (
+        <Item key={s.id} section={s} />
+      ))}
 
-        <span className="my-1.5 h-px w-6 shrink-0" style={{ background: GREY.hairline }} />
+      <span className="my-1.5 h-px w-6 shrink-0" style={{ background: GREY.hairline }} />
 
-        {ACCOUNT.map((s) => (
-          <Item key={s.id} section={s} />
-        ))}
-      </div>
+      {ACCOUNT.map((s) => (
+        <Item key={s.id} section={s} />
+      ))}
 
       {/* Profile sits last, an avatar rather than another icon slot. */}
       <button
         type="button"
         aria-label="Profile"
         title="Profile"
-        className="mt-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-opacity hover:opacity-80"
+        className="mt-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-opacity hover:opacity-80"
       >
         <span
           className="flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-medium"
