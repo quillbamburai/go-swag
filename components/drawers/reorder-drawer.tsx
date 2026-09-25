@@ -167,7 +167,9 @@ export function ReorderDrawer({
           )}
         </header>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-6 pb-6">
+        {/* 40px between sections — measured from the Figma frame, where the
+            sections sit 36-44px apart. Tighter than this reads congested. */}
+        <div className="flex min-h-0 flex-1 flex-col gap-10 overflow-y-auto px-6 pb-6">
           {step === "order" && (
             <>
               <section className="flex flex-col gap-2.5">
@@ -213,27 +215,31 @@ export function ReorderDrawer({
                       <span className={TYPE.meta} style={{ color: GREY.muted }}>
                         {size}
                       </span>
+                      {/* The field holds the unit count; the share sits
+                          beneath it, as in the Figma frame. */}
                       <span
                         className="flex items-center gap-1 rounded-lg px-2.5 py-2"
                         style={{ background: GREY.well }}
                       >
                         <input
                           type="number"
-                          value={mix[size]}
+                          value={Math.round((qty * mix[size]) / 100)}
                           min={0}
-                          max={100}
-                          onChange={(e) =>
-                            setMix({ ...mix, [size]: Math.max(0, Number(e.target.value)) })
-                          }
+                          onChange={(e) => {
+                            const units = Math.max(0, Number(e.target.value))
+                            const pct = qty > 0 ? Math.round((units / qty) * 100) : 0
+                            setMix({ ...mix, [size]: pct })
+                          }}
+                          aria-label={`${size} units`}
                           className={`w-full bg-transparent outline-none numeric ${TYPE.rowValue}`}
                           style={{ color: GREY.text }}
                         />
                         <span className={TYPE.meta} style={{ color: GREY.faint }}>
-                          %
+                          units
                         </span>
                       </span>
                       <span className={TYPE.meta} style={{ color: GREY.faint }}>
-                        {Math.round((qty * mix[size]) / 100)} units
+                        {mix[size]}%
                       </span>
                     </label>
                   ))}
@@ -267,12 +273,16 @@ export function ReorderDrawer({
                 </span>
               </section>
 
+              {/* Sits closer than a section break: it qualifies the cost
+                  above rather than standing on its own. */}
               {nextEvent && (
-                <LeadTimeWarning
-                  readyDate={shown.leadTimeReadyDate}
-                  eventName={nextEvent.name}
-                  eventDate={nextEvent.eventDate}
-                />
+                <div className="-mt-6">
+                  <LeadTimeWarning
+                    readyDate={shown.leadTimeReadyDate}
+                    eventName={nextEvent.name}
+                    eventDate={nextEvent.eventDate}
+                  />
+                </div>
               )}
             </>
           )}
@@ -631,7 +641,7 @@ function Primary({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`flex h-11 flex-1 items-center justify-center rounded-lg transition-opacity hover:opacity-90 disabled:opacity-40 ${TYPE.control}`}
+      className={`flex h-11 w-full flex-1 items-center justify-center rounded-lg transition-opacity hover:opacity-90 disabled:opacity-40 ${TYPE.control}`}
       style={{ background: GREY.text, color: GREY.panel }}
     >
       {children}
