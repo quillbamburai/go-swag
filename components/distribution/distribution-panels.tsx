@@ -218,7 +218,7 @@ export function CarrierPanel({ dispatches }: { dispatches: Dispatch[] }) {
           className="mt-[33px] shrink-0 numeric"
           style={{
             fontFamily: "var(--font-family-display)",
-            fontWeight: "var(--font-weight-semibold)",
+            fontWeight: "var(--font-weight-medium)",
             fontSize: 32,
             lineHeight: "28px",
             letterSpacing: "var(--letter-spacing-tightest)",

@@ -17,8 +17,8 @@ type View = "packs" | "events"
 
 /** Per-bar opacity within a month group, measured from the design. */
 const BAR_OPACITY = [1, 1, 0.8, 0.6, 0.4, 0.2]
-/** Deeper step of the chart ramp — 72 bars at chrome-white/500 read as glare. */
-const BAR_FILL = "var(--color-chrome-white-700)"
+/** Matches the metric panels' accent so the two regions read as one system. */
+const BAR_FILL = "var(--color-panel-accent)"
 const BAR_W = 10
 /** Gap between month groups. */
 const GROUP_GAP = 48
@@ -26,12 +26,12 @@ const GROUP_GAP = 48
 const GROUP_DIM = 0.4
 
 const LINE_STYLE = {
-  solid: { width: 1.5, opacity: 1, dash: undefined as string | undefined },
-  light: { width: 1, opacity: 0.55, dash: undefined as string | undefined },
-  dotted: { width: 1, opacity: 0.55, dash: "2 3" },
+  /* Promotions is the highlighted series — bees-wax/500 reads clearly at
+     1.5px against the canvas, where the lighter tag yellow does not. */
+  solid: { width: 1.5, opacity: 1, dash: undefined as string | undefined, color: "var(--color-bees-wax-500)" },
+  light: { width: 1, opacity: 0.55, dash: undefined as string | undefined, color: GREY.text },
+  dotted: { width: 1, opacity: 0.55, dash: "2 3", color: GREY.text },
 }
-/** The legend always shows a plain rule, whatever the line's plotted style. */
-const LEGEND_STROKE = { width: 1.5, dash: undefined as string | undefined }
 
 
 /**
@@ -90,7 +90,10 @@ export function DispatchTrend({ onSwitchView }: { onSwitchView: () => void }) {
     <div className="flex h-full flex-col pl-[31px] pr-8">
       {/* h-0 so the tabs float and the chart header can rise to meet the top of
           the rail's first icon; the tabs still render at their own position. */}
-      <div className="relative z-10 flex h-0 shrink-0 items-start justify-end gap-5">
+      {/* translate-y drops the tabs onto the label/figure line without
+          affecting layout — the row is h-0, so padding would push the whole
+          header down instead. */}
+      <div className="relative z-10 flex h-0 shrink-0 translate-y-[38px] items-start justify-end gap-5">
         <button
           type="button"
           onClick={() => setView("events")}
@@ -149,44 +152,49 @@ function PacksView() {
 
   return (
     <>
-      {/* Lifts the header block toward the top of the rail's first icon while
-          staying clear of the hub switcher above. pointer-events-none on the
-          row keeps the switcher clickable; the legend re-enables its own. */}
-      <div className="pointer-events-none -mt-[28px] flex shrink-0 items-start justify-between gap-4">
-        <div className="flex flex-col">
-          {/* 21px / 11px — measured from the Dispatches-over-time component. */}
-          <h2 className={`mb-[21px] ${TYPE.panelTitle}`} style={{ color: GREY.faint }}>
-            Dispatches over time
-          </h2>
-          {/* Controls sit level with the figure, per the v4 frame. */}
-          <div className="mb-[11px] flex items-center gap-16">
-            <p
-              className="numeric"
-              style={{
-                fontFamily: "var(--font-family-display)",
-                fontWeight: "var(--font-weight-medium)",
-                fontSize: "var(--text-h3-size)",
-                lineHeight: "var(--text-h3-line-height)",
-                letterSpacing: "var(--letter-spacing-tightest)",
-                color: GREY.text,
-              }}
-            >
-              {total.toLocaleString()}
-            </p>
-            <span className="pointer-events-auto mt-2.5 flex items-center gap-2">
-              <DateRange from={monthlyPacks[0].month} to={monthlyPacks[monthlyPacks.length - 1].month} />
-              <FilterButton />
-            </span>
-          </div>
-          <p className={TYPE.meta} style={{ color: GREY.muted }}>
+      {/* Open layout: the label and controls sit left, the hero figure is
+          centred over the chart it heads, and the legend runs beneath. */}
+      <div className="relative mt-10 shrink-0">
+        <h2 className={TYPE.panelTitle} style={{ color: GREY.faint }}>
+          Dispatches over time
+        </h2>
+
+        <div className="mt-[28px] flex items-center gap-2">
+          <DateRange from={monthlyPacks[0].month} to={monthlyPacks[monthlyPacks.length - 1].month} />
+          <FilterButton />
+        </div>
+
+        {/* Centred on the plot, not the column. -top-[22px] pulls the figure
+            up so its optical centre sits on the label/tabs line — the three
+            read as one row across the screen. pointer-events-none keeps the
+            controls behind it clickable. */}
+        <div className="pointer-events-none absolute inset-x-0 top-[10px] flex flex-col items-center">
+          <p
+            className="numeric"
+            style={{
+              fontFamily: "var(--font-family-display)",
+              fontWeight: "var(--font-weight-medium)",
+              fontSize: 64,
+              lineHeight: "64px",
+              letterSpacing: "var(--letter-spacing-tightest)",
+              color: GREY.text,
+            }}
+          >
+            {total.toLocaleString()}
+          </p>
+          <p className={`mt-[19px] ${TYPE.meta}`} style={{ color: GREY.text }}>
             Units shipped · rolling 12 months
           </p>
         </div>
+      </div>
 
-        {/* mt-[78px] keeps the legend below the Events/Packs tabs while the
-            hero block above it sits high against the rail. */}
-        <div className="pointer-events-auto mt-[78px] flex shrink-0 items-center gap-8">
-          {departmentTrend.map((d) => {
+      <div className="mt-[53px] flex shrink-0 items-start justify-between gap-4">
+        {/* One group; the highlighted series is ordered last within it. */}
+        <div className="flex shrink-0 items-center gap-8">
+
+          {[...departmentTrend]
+            .sort((a, b) => Number(a.style === "solid") - Number(b.style === "solid"))
+            .map((d) => {
             const st = LINE_STYLE[d.style]
             return (
               <span
@@ -195,11 +203,13 @@ function PacksView() {
                 onMouseEnter={() => setLine(departmentTrend.indexOf(d))}
                 onMouseLeave={() => setLine(null)}
               >
-                <svg width="24" height="2" aria-hidden>
+                <svg width="24" height="4" aria-hidden>
                   <line
-                    x1="0" y1="1" x2="24" y2="1"
-                    stroke={GREY.text}
-                    strokeWidth={LEGEND_STROKE.width}
+                    x1="0" y1="2" x2="24" y2="2"
+                    stroke={st.color}
+                    strokeWidth={st.width}
+                    strokeDasharray={st.dash}
+                    opacity={st.opacity}
                   />
                 </svg>
                 <span className={TYPE.meta} style={{ color: GREY.muted }}>
@@ -248,7 +258,7 @@ function PacksView() {
                       key={d.department}
                       d={curvePath(d.curve, contentW, lineTop, lineBand)}
                       fill="none"
-                      stroke={GREY.text}
+                      stroke={st.color}
                       strokeWidth={line === li ? st.width + 1 : st.width}
                       strokeDasharray={st.dash}
                       opacity={dim ? 0.15 : st.opacity}

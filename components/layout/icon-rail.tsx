@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { GREY } from "@/components/mid-fidelity"
 
 /**
@@ -105,7 +106,7 @@ export function IconRail() {
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${
           isActive ? "" : "cursor-default bg-transparent hover:bg-[#F7F7F7]"
         }`}
-        style={isActive ? { background: "var(--color-rock-main-800)" } : undefined}
+        style={isActive ? { background: GREY.well } : undefined}
       >
         <svg
           width="22"
@@ -116,7 +117,7 @@ export function IconRail() {
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{ "--rail-ink": isActive ? "#FFFFFF" : GREY.faint } as React.CSSProperties}
+          style={{ "--rail-ink": isActive ? GREY.text : GREY.faint } as React.CSSProperties}
           aria-hidden
         >
           {section.path}
@@ -131,6 +132,16 @@ export function IconRail() {
       style={{ background: GREY.panel }}
       aria-label="Main navigation"
     >
+      {/* Brand mark heads the rail; the gap below separates it from the nav. */}
+      <Image
+        src="/logo/swag-logo-box.png"
+        alt="Go Swag"
+        width={128}
+        height={128}
+        priority
+        className="mb-8 h-11 w-11 shrink-0 rounded-xl"
+      />
+
       {WORK.map((s) => (
         <Item key={s.id} section={s} />
       ))}

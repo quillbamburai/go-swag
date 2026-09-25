@@ -227,9 +227,9 @@
   --color-info: var(--color-aqua-squeeze-600);
   --color-info-surface: var(--color-aqua-squeeze-50);
 
-  /* Metric panels: the warm accent on donuts, share bars and the hold
-     banner, plus the carrier-tag fill. */
-  --color-panel-accent: var(--color-rock-600);
+  /* Metric panels: the accent on donuts and share bars, plus the
+     carrier-tag fill. */
+  --color-panel-accent: var(--color-aqua-squeeze-600);
   --color-tag-carrier: var(--color-bees-wax-250);
   /* Hold/notice banner — reads as information, not as a panel accent. */
   --color-notice: var(--color-aqua-squeeze-600);

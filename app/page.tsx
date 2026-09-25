@@ -1,11 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { AppHeader } from "@/components/layout/app-header"
+import { TopRow } from "@/components/layout/top-row"
 import { IconRail } from "@/components/layout/icon-rail"
 import {
   InventoryHub,
-  HubSwitcher,
   AlphaFilter,
   ViewToggle,
   FilterButton,
@@ -43,37 +42,30 @@ export default function Page() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden" style={{ background: GREY.canvas }}>
-      <AppHeader />
-
       <div className="flex min-h-0 flex-1 gap-4 p-4">
         <IconRail />
 
         <div className="flex min-w-0 flex-1 flex-col">
-          {/* mr-[336px] discounts the right column (320px + 16px gap) so the
-              switcher centres between the rail and the metric panels, not the
-              viewport. */}
-          <div className="mr-[336px] flex items-center justify-between gap-4 pb-2.5">
-            <div className="flex-1" />
-            <HubSwitcher activeHub={activeHub} onHubChange={setActiveHub} />
-            {/* Distribution renders A-Z and Filter beside its hero figure. */}
-            <div className="flex flex-1 items-center justify-end gap-2">
-              {activeHub === "inventory" && (
-                <>
-                  <ViewToggle view={view} onViewChange={setView} />
-                  <AlphaFilter />
-                  <div className="ml-6">
-                    <FilterButton />
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          {/* Open layout: no header bar — the top row sits on the canvas.
+              Inventory's controls sit beside the search; Distribution renders
+              its own beside the hero figure. */}
+          <TopRow activeHub={activeHub} onHubChange={setActiveHub}>
+            {activeHub === "inventory" && (
+              <>
+                <ViewToggle view={view} onViewChange={setView} />
+                <AlphaFilter />
+                <FilterButton />
+              </>
+            )}
+          </TopRow>
 
           {activeHub === "inventory" ? (
             products.length === 0 ? (
               <EmptyOnboarding onAddProduct={() => {}} onImportManifest={() => {}} />
             ) : (
-              <div className="flex min-h-0 flex-1 flex-col gap-6">
+              /* pt-8 replaces the separation the old control row used to give;
+                 without it "Warehouse" sits hard under the tabs. */
+              <div className="flex min-h-0 flex-1 flex-col gap-6 pt-8">
                 <div className="flex shrink-0 flex-col gap-2.5">
                   <div className="flex shrink-0 items-baseline justify-between">
                     <h2 className={TYPE.panelTitle} style={{ color: GREY.faint }}>Warehouse</h2>
@@ -99,11 +91,13 @@ export default function Page() {
                   </div>
                 </div>
 
-                <div className="flex min-h-0 flex-1 flex-col gap-2.5">
+                {/* Fixed height so the panels don't stretch to swallow
+                    leftover vertical space when anything above them changes. */}
+                <div className="flex shrink-0 flex-col gap-2.5">
                   <h2 className={`shrink-0 ${TYPE.panelTitle}`} style={{ color: GREY.faint }}>
                     Insights
                   </h2>
-                  <div className="min-h-0 flex-1">
+                  <div className="h-[434px] shrink-0">
                     <InsightPanels products={products} campaigns={campaigns} />
                   </div>
                 </div>
