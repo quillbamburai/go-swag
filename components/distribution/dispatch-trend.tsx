@@ -130,7 +130,7 @@ function PacksView() {
       {/* Open layout: the label and controls sit left, the hero figure is
           centred over the chart it heads, and the legend runs beneath. */}
       <div className="relative mt-10 shrink-0">
-        <h2 className={TYPE.panelTitle} style={{ color: GREY.faint }}>
+        <h2 className={TYPE.panelTitle} style={{ color: GREY.text }}>
           Dispatches over time
         </h2>
 
@@ -159,10 +159,8 @@ function PacksView() {
           >
             {total.toLocaleString()}
           </p>
-          <p
-            className={`mt-[19px] text-center ${TYPE.meta}`}
-            style={{ color: GREY.text, fontVariantCaps: "all-small-caps" }}
-          >
+          {/* Same treatment as the legend keys below the chart. */}
+          <p className={`mt-[19px] text-center ${TYPE.meta}`} style={{ color: GREY.text }}>
             Units shipped
           </p>
         </div>

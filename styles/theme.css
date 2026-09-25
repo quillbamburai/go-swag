@@ -230,7 +230,7 @@
   /* Metric panels: the accent on donuts and share bars, plus the
      carrier-tag fill. */
   --color-panel-accent: var(--color-aqua-squeeze-600);
-  --color-tag-carrier: var(--color-bees-wax-250);
+  --color-tag-carrier: var(--color-bees-wax-200);
   /* Hold/notice banner — reads as information, not as a panel accent. */
   --color-notice: var(--color-aqua-squeeze-600);
 

@@ -340,7 +340,7 @@ export function TierSpendPanel() {
               fontWeight: "var(--font-weight-medium)",
               fontSize: "var(--text-h4-size)",
               lineHeight: "var(--text-h4-line-height)",
-              letterSpacing: "var(--letter-spacing-tight)",
+              letterSpacing: "var(--letter-spacing-tightest)",
               color: GREY.text,
             }}
           >
