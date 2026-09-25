@@ -134,7 +134,9 @@ function PacksView() {
           Dispatches over time
         </h2>
 
-        <div className="mt-[28px] flex items-center gap-2">
+        {/* 24px between the range and the filter: they act on the chart in
+            different ways, so the gap reads them as separate controls. */}
+        <div className="mt-[28px] flex items-center gap-6">
           <DateRange from={monthlyPacks[0].month} to={monthlyPacks[monthlyPacks.length - 1].month} />
           <FilterButton />
         </div>
