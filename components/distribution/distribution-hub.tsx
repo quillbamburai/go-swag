@@ -9,7 +9,6 @@ import {
   ClaimLinksPanel,
   CountryLocationPanel,
   CarrierPanel,
-  ExceptionsPanel,
   TierSpendPanel,
 } from "./distribution-panels"
 
@@ -76,7 +75,6 @@ export function DistributionHub({
             <ClaimLinksPanel campaigns={campaigns} />
             <CountryLocationPanel />
             <CarrierPanel dispatches={dispatches} />
-            <ExceptionsPanel dispatches={dispatches} onFixAddresses={() => {}} />
             <TierSpendPanel />
           </div>
         </div>
