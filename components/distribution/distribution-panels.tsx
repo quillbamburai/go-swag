@@ -36,7 +36,7 @@ function MetricPanel({
   // Fixed at the designed height — the column scrolls vertically rather than
   // compressing the panels to fit.
   return (
-    <div className="h-[219px] shrink-0">
+    <div className="h-[205px] shrink-0">
       <Panel label={label}>
       {supportInline ? (
         <div className="mt-4 flex shrink-0 items-baseline justify-between gap-3">
@@ -97,7 +97,7 @@ export function ClaimLinksPanel({ campaigns }: { campaigns: Campaign[] }) {
   const { index: hovered, anchor, bind } = useHoverIndex()
 
   return (
-    <div className="h-[219px] shrink-0">
+    <div className="h-[205px] shrink-0">
       <Panel label="Claim links">
         {/* Labels y65, donuts y100, percentages y185 — from the component. */}
         <div className="mt-[19px] flex shrink-0 items-start justify-between">
@@ -131,7 +131,7 @@ export function CountryLocationPanel() {
   const total = countryLocation.reduce((s, c) => s + c.share, 0)
 
   return (
-    <div className="h-[219px] shrink-0">
+    <div className="h-[205px] shrink-0">
       <Panel label="Country location">
         {/* 22px stacked bar beside the rows, both starting y66. */}
         <div className="mt-[36px] flex min-h-0 shrink-0 gap-4">
@@ -219,7 +219,7 @@ export function CarrierPanel({ dispatches }: { dispatches: Dispatch[] }) {
   const { index: hovered, anchor, bind } = useHoverIndex()
 
   return (
-    <div className="h-[219px] shrink-0">
+    <div className="h-[205px] shrink-0">
       <Panel label="Postage">
         {/* Figure 32px / -6px tracking, tags as black pills — from the component. */}
         <p
@@ -330,7 +330,7 @@ export function TierSpendPanel() {
     v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   return (
-    <div className="h-[420px] shrink-0">
+    <div className="h-[246px] shrink-0">
       <Panel label="Postage">
         <div className="mt-4 flex shrink-0 flex-col gap-3">
           <p
