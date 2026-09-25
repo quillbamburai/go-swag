@@ -64,7 +64,7 @@ function MetricPanel({
 }
 
 /** One 70px donut, 60% inner radius — geometry from the Figma component. */
-function Donut({ pct, size = 70 }: { pct: number; size?: number }) {
+function Donut({ pct, size = 70, delay = 0 }: { pct: number; size?: number; delay?: number }) {
   const r = size / 2
   const stroke = r * 0.4           // innerRadius 0.6 leaves a 40% ring
   const radius = r - stroke / 2
@@ -81,6 +81,13 @@ function Donut({ pct, size = 70 }: { pct: number; size?: number }) {
         strokeWidth={stroke}
         strokeDasharray={`${(pct / 100) * circ} ${circ}`}
         transform={`rotate(-90 ${r} ${r})`}
+        className="chart-donut"
+        style={
+          {
+            "--arc-length": `${(pct / 100) * circ}`,
+            animationDelay: `${delay}ms`,
+          } as React.CSSProperties
+        }
       />
     </svg>
   )
@@ -99,7 +106,7 @@ export function ClaimLinksPanel({ campaigns }: { campaigns: Campaign[] }) {
               <span style={{ fontFamily: TIGHT, fontSize: 12, lineHeight: "20px", color: "#232426" }}>
                 {c.label}
               </span>
-              <Donut pct={c.pct} />
+              <Donut pct={c.pct} delay={120 + i * 110} />
               <span className={TYPE.meta} style={{ color: GREY.muted }}>
                 {c.pct}%
               </span>
@@ -190,8 +197,9 @@ export function CountryLocationPanel() {
         {hovered !== null && (
           <DataTooltip
             anchor={anchor}
-            value={`${countryLocation[hovered].share}% of shipments`}
-            detail={`${countryLocation[hovered].country} · up ${countryLocation[hovered].delta}%`}
+            value={`${countryLocation[hovered].share}%`}
+            delta={`+${countryLocation[hovered].delta}%`}
+            detail={`${countryLocation[hovered].country} · share of shipments`}
           />
         )}
       </Panel>
@@ -235,7 +243,7 @@ export function CarrierPanel({ dispatches }: { dispatches: Dispatch[] }) {
           {carriers.map(([carrier, count], i) => (
             <span
               key={carrier}
-              className="cursor-default rounded px-2 py-[6px]"
+              className="cursor-default px-2 py-[6px]"
               style={{
                 background: "var(--color-tag-carrier)",
                 color: "#000000",
@@ -289,5 +297,140 @@ export function ExceptionsPanel({
         Fix addresses
       </button>
     </MetricPanel>
+  )
+}
+
+/** Postage spend by carrier tier — the Inventory panel's chart, sized for the
+    Distribution column. Taller than the other panels so the bars have room. */
+const TIER_SPEND = [
+  { label: "Next day", value: 1840.5, shipments: 412 },
+  { label: "Standard", value: 1216.8, shipments: 968 },
+  { label: "International", value: 704.25, shipments: 143 },
+  { label: "Tracked 48", value: 358.4, shipments: 286 },
+  { label: "Special", value: 118.9, shipments: 24 },
+]
+
+const TIER_BAR_LABEL: React.CSSProperties = {
+  fontFamily: "var(--font-family-body)",
+  fontSize: "12px",
+  lineHeight: "20px",
+  writingMode: "vertical-rl",
+  transform: "translateX(-50%) rotate(180deg)",
+}
+
+export function TierSpendPanel() {
+  const { index: hovered, anchor, bind } = useHoverIndex()
+  const total = TIER_SPEND.reduce((sum, c) => sum + c.value, 0)
+
+  const peak = Math.max(...TIER_SPEND.map((c) => c.value))
+  const step = 500
+  const ceiling = Math.ceil(peak / step) * step
+  const ticks = Array.from({ length: ceiling / step - 1 }, (_, i) => ceiling - (i + 1) * step)
+  const money = (v: number) =>
+    v.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+  return (
+    <div className="h-[420px] shrink-0">
+      <Panel label="Postage">
+        <div className="mt-4 flex shrink-0 flex-col gap-3">
+          <p
+            className="numeric"
+            style={{
+              fontFamily: "var(--font-family-display)",
+              fontWeight: "var(--font-weight-medium)",
+              fontSize: "var(--text-h4-size)",
+              lineHeight: "var(--text-h4-line-height)",
+              letterSpacing: "var(--letter-spacing-tight)",
+              color: GREY.text,
+            }}
+          >
+            £{money(total)}
+          </p>
+          <p className={TYPE.meta} style={{ color: GREY.muted }}>
+            Accumulated this month
+          </p>
+        </div>
+
+        <div className="mt-5 flex justify-end">
+          <span className={TYPE.columnHeader} style={{ color: GREY.faint }}>
+            Spend
+          </span>
+        </div>
+
+        <div className="relative mt-2 min-h-0 flex-1">
+          <div className="absolute inset-0 flex flex-col justify-between">
+            {ticks.map((tick) => (
+              <div key={tick} className="flex items-center gap-2">
+                <div className="h-px flex-1" style={{ background: GREY.hairline }} />
+                <span
+                  className={`shrink-0 ${TYPE.meta}`}
+                  style={{ color: GREY.faint, fontSize: "10px", lineHeight: "12px" }}
+                >
+                  £{(tick / 1000).toLocaleString("en-GB", { maximumFractionDigits: 1 })}k
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="absolute inset-y-0 left-0 right-12 flex items-end gap-1">
+            {TIER_SPEND.map((category, i) => {
+              const pct = (category.value / ceiling) * 100
+              return (
+                <div
+                  key={category.label}
+                  className="relative flex h-full w-[38px] shrink-0 cursor-default items-end"
+                  {...bind(i)}
+                >
+                  <div
+                    className="chart-bar w-full transition-opacity"
+                    style={{
+                      height: `${pct}%`,
+                      background: ACCENT,
+                      opacity: hovered === null || hovered === i ? 1 : 0.55,
+                      animationDelay: `${i * 60}ms`,
+                    }}
+                  />
+
+                  {/* Label reads bottom-to-top from the bar's foot, drawn twice
+                      so it stays legible over both the bar and the panel. */}
+                  <span
+                    className="pointer-events-none absolute bottom-2 left-1/2 whitespace-nowrap"
+                    style={{ ...TIER_BAR_LABEL, color: GREY.text }}
+                  >
+                    {category.label}
+                  </span>
+                  <span
+                    className="pointer-events-none absolute bottom-0 left-0 w-full overflow-hidden"
+                    style={{ height: `${pct}%` }}
+                    aria-hidden
+                  >
+                    <span
+                      className="absolute bottom-2 left-1/2 whitespace-nowrap"
+                      style={{ ...TIER_BAR_LABEL, color: "#FFFFFF" }}
+                    >
+                      {category.label}
+                    </span>
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+
+          {hovered !== null && (
+            <DataTooltip
+              anchor={anchor}
+              value={`£${money(TIER_SPEND[hovered].value)}`}
+              detail={`${TIER_SPEND[hovered].shipments} shipments`}
+            />
+          )}
+        </div>
+
+        <div className="mt-2 flex shrink-0">
+          <span className={TYPE.columnHeader} style={{ color: GREY.faint }}>
+            Tier
+          </span>
+        </div>
+      </Panel>
+    </div>
   )
 }

@@ -5,7 +5,13 @@ import type { Campaign, Dispatch } from "@/lib/types"
 import { PackHoldAlert } from "@/components/drawers/pack-hold-alert"
 import { DispatchTrend } from "./dispatch-trend"
 import { DispatchTable } from "./dispatch-table"
-import { ClaimLinksPanel, CountryLocationPanel, CarrierPanel, ExceptionsPanel } from "./distribution-panels"
+import {
+  ClaimLinksPanel,
+  CountryLocationPanel,
+  CarrierPanel,
+  ExceptionsPanel,
+  TierSpendPanel,
+} from "./distribution-panels"
 
 /**
  * View 2 — dispatch trend open on the canvas, metric panels down the right,
@@ -71,6 +77,7 @@ export function DistributionHub({
             <CountryLocationPanel />
             <CarrierPanel dispatches={dispatches} />
             <ExceptionsPanel dispatches={dispatches} onFixAddresses={() => {}} />
+            <TierSpendPanel />
           </div>
         </div>
       </div>

@@ -20,7 +20,9 @@ export function ProductCard({
   onStockUp: (product: Product) => void
   onSeeStatus: (product: Product) => void
 }) {
-  const isOutOfStock = product.warehouseQty === 0
+  const inProduction =
+    product.status === "in-production" && product.warehouseQty === 0
+  const isOutOfStock = product.warehouseQty === 0 && !inProduction
   const runOut = isOutOfStock ? null : runOutDate(product.depletionDays)
   const membership = packMembership[product.id]
 
@@ -33,7 +35,26 @@ export function ProductCard({
       }}
     >
       <div className="flex items-center justify-between gap-2">
-        {isOutOfStock ? (
+        {inProduction ? (
+          /* Ordered and confirmed: the units are on their way, so the card
+             reads as pending rather than out of stock. */
+          <>
+            <span
+              className={`shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 ${TYPE.control}`}
+              style={{ background: GREY.well, color: GREY.text }}
+            >
+              Production
+            </span>
+            {product.pendingUnits && (
+              <span
+                className={`truncate ${TYPE.meta}`}
+                style={{ color: GREY.muted }}
+              >
+                {product.pendingUnits} units · est. {product.pendingArrival}
+              </span>
+            )}
+          </>
+        ) : isOutOfStock ? (
           <span
             className={`rounded-full px-2.5 py-1 ${TYPE.control}`}
             style={{ background: GRADIENT, color: "#FFFFFF" }}
@@ -43,7 +64,7 @@ export function ProductCard({
         ) : (
           <>
             <span
-              className={`rounded-full px-2.5 py-[3px] ${TYPE.rowValue} font-medium`}
+              className={`shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 ${TYPE.control}`}
               style={{ color: GREY.text, border: `1.5px solid ${GREY.bar}` }}
             >
               {product.warehouseQty} left
@@ -104,8 +125,11 @@ export function ProductCard({
           <button
             type="button"
             onClick={() => onStockUp(product)}
+            disabled={inProduction}
             aria-label={`Reorder ${product.skuName}`}
-            className="flex h-7 w-7 items-center justify-center rounded-full transition-opacity hover:opacity-80"
+            className={`flex h-7 w-7 items-center justify-center rounded-full transition-opacity ${
+              inProduction ? "opacity-40" : "hover:opacity-80"
+            }`}
             style={
               isOutOfStock
                 ? { background: GRADIENT, color: "#FFFFFF" }

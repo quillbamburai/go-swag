@@ -3,8 +3,9 @@
 import { useLayoutEffect, useRef, useState } from "react"
 import {
   monthlyPacks,
+  departments,
   packStreams,
-  departmentTrend,
+  packTypeTrend,
   eventLeadTimes,
   FACTORY_LEAD_DAYS,
 } from "@/lib/mock-data"
@@ -40,7 +41,7 @@ const LINE_STYLE = {
  * nothing is re-interpolated or smoothed here.
  */
 function curvePath(
-  curve: (typeof departmentTrend)[number]["curve"],
+  curve: (typeof packTypeTrend)[number]["curve"],
   w: number,
   top: number,
   band: number,
@@ -88,34 +89,7 @@ export function DispatchTrend({ onSwitchView }: { onSwitchView: () => void }) {
 
   return (
     <div className="flex h-full flex-col pl-[31px] pr-8">
-      {/* h-0 so the tabs float and the chart header can rise to meet the top of
-          the rail's first icon; the tabs still render at their own position. */}
-      {/* translate-y drops the tabs onto the label/figure line without
-          affecting layout — the row is h-0, so padding would push the whole
-          header down instead. */}
-      <div className="relative z-10 flex h-0 shrink-0 translate-y-[38px] items-start justify-end gap-5">
-        <button
-          type="button"
-          onClick={() => setView("events")}
-          className={`transition-opacity hover:opacity-70 ${TYPE.control}`}
-          style={{ color: view === "events" ? GREY.text : GREY.faint }}
-        >
-          Events
-        </button>
-        <button
-          type="button"
-          onClick={() => setView("packs")}
-          className={`pb-0.5 transition-opacity hover:opacity-70 ${TYPE.control}`}
-          style={{
-            color: view === "packs" ? GREY.text : GREY.faint,
-            borderBottom: `1px solid ${view === "packs" ? GREY.text : "transparent"}`,
-          }}
-        >
-          Packs
-        </button>
-      </div>
-
-      {view === "packs" ? <PacksView /> : <EventsView />}
+      <PacksView />
     </div>
   )
 }
@@ -135,8 +109,9 @@ function PacksView() {
     return () => ro.disconnect()
   }, [])
   const [bar, setBar] = useState<{ m: number; s: number } | null>(null)
+  const [barAnchor, setBarAnchor] = useState<HTMLElement | null>(null)
   const [line, setLine] = useState<number | null>(null)
-  const total = monthlyPacks.reduce((s, m) => s + m.values.reduce((a, b) => a + b, 0), 0)
+  const total = 1837
   const dataMax = Math.max(...monthlyPacks.flatMap((m) => m.values))
   const peak = Math.ceil((dataMax * 1.02) / 50) * 50
 
@@ -182,8 +157,11 @@ function PacksView() {
           >
             {total.toLocaleString()}
           </p>
-          <p className={`mt-[19px] ${TYPE.meta}`} style={{ color: GREY.text }}>
-            Units shipped · rolling 12 months
+          <p
+            className={`mt-[19px] text-center ${TYPE.meta}`}
+            style={{ color: GREY.text, fontVariantCaps: "all-small-caps" }}
+          >
+            Units shipped
           </p>
         </div>
       </div>
@@ -192,15 +170,15 @@ function PacksView() {
         {/* One group; the highlighted series is ordered last within it. */}
         <div className="flex shrink-0 items-center gap-8">
 
-          {[...departmentTrend]
+          {[...packTypeTrend]
             .sort((a, b) => Number(a.style === "solid") - Number(b.style === "solid"))
             .map((d) => {
             const st = LINE_STYLE[d.style]
             return (
               <span
-                key={d.department}
+                key={d.packType}
                 className="flex cursor-default items-center gap-2"
-                onMouseEnter={() => setLine(departmentTrend.indexOf(d))}
+                onMouseEnter={() => setLine(packTypeTrend.indexOf(d))}
                 onMouseLeave={() => setLine(null)}
               >
                 <svg width="24" height="4" aria-hidden>
@@ -213,7 +191,7 @@ function PacksView() {
                   />
                 </svg>
                 <span className={TYPE.meta} style={{ color: GREY.muted }}>
-                  {d.department}
+                  {d.packType}
                 </span>
               </span>
             )
@@ -250,12 +228,14 @@ function PacksView() {
                 viewBox={`0 0 ${contentW} ${plotH}`}
                 aria-hidden
               >
-                {departmentTrend.map((d, li) => {
+                {packTypeTrend.map((d, li) => {
                   const st = LINE_STYLE[d.style]
                   const dim = line !== null && line !== li
                   return (
                     <path
-                      key={d.department}
+                      key={d.packType}
+                      className="chart-line"
+                      style={{ animationDelay: `${260 + li * 90}ms` }}
                       d={curvePath(d.curve, contentW, lineTop, lineBand)}
                       fill="none"
                       stroke={st.color}
@@ -284,16 +264,25 @@ function PacksView() {
                         key={j}
                         className="h-full shrink-0 cursor-default"
                         style={{ width: BAR_W, display: "flex", alignItems: "flex-end" }}
-                        onMouseEnter={() => setBar({ m: i, s: j })}
-                        onMouseLeave={() => setBar(null)}
+                        onMouseEnter={(e) => {
+                          setBar({ m: i, s: j })
+                          setBarAnchor(e.currentTarget)
+                        }}
+                        onMouseLeave={() => {
+                          setBar(null)
+                          setBarAnchor(null)
+                        }}
                       >
                         <div
-                          className="w-full transition-opacity"
+                          className="chart-bar w-full transition-opacity"
                           style={{
                             height: `${(value / peak) * 100}%`,
                             background: BAR_FILL,
                             opacity: isBar ? 1 : BAR_OPACITY[j],
                             outline: isBar ? `1px solid ${GREY.text}` : undefined,
+                            /* Stagger across months, then across bars within
+                               each month, so the chart fills left to right. */
+                            animationDelay: `${i * 30 + j * 8}ms`,
                           }}
                         />
                       </div>
@@ -313,6 +302,14 @@ function PacksView() {
                 </span>
               ))}
             </div>
+
+            {bar && barAnchor && (
+              <DataTooltip
+                anchor={barAnchor}
+                value={`${monthlyPacks[bar.m].values[bar.s].toLocaleString()} units`}
+                detail={`${departments[bar.s]} · ${monthlyPacks[bar.m].month}`}
+              />
+            )}
           </div>
         </div>
       </div>

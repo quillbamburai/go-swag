@@ -27,32 +27,33 @@ export function TopRow({
         <HubSwitcher activeHub={activeHub} onHubChange={onHubChange} />
       </div>
 
-      {/* Search is positioned against the row, not laid out in it, so the
-          switcher, the controls beside it and Create can vary in width
-          without ever pushing it off the screen's centre line. */}
+      {/* Search and the hub controls are one group, centred on the span between
+          the rail and the Create button. Positioned rather than laid out, so
+          the switcher's width can't push the group off that centre. */}
       <div
-        className="absolute flex items-center gap-2 rounded-lg px-3 py-2"
+        className="absolute flex items-center gap-2.5"
         style={{
-          background: GREY.panel,
-          width: 425,
-          /* Centre between the rail and the right column, not on the whole
-             row — on Distribution the metric panels occupy 320px plus a 16px
-             gap, so the usable centre shifts 168px left. */
-          left: activeHub === "distribution" ? "calc(50% - 168px)" : "50%",
+          /* The row starts at the rail's right edge and ends at the viewport
+             edge, but the group should centre on rail→Create instead: Create
+             is 320px wide with a 16px gutter, so the centre shifts 168px. */
+          left: "calc(50% - 168px)",
           transform: "translateX(-50%)",
         }}
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GREY.faint} strokeWidth="2">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" strokeLinecap="round" />
-        </svg>
-        <span className={TYPE.meta} style={{ color: GREY.faint }}>
-          Search SKU or campaign
-        </span>
-        {children && (
-          <span className="absolute left-full ml-2 flex shrink-0 items-center gap-2 whitespace-nowrap">
-            {children}
+        <div
+          className="flex shrink-0 items-center gap-2 rounded-lg px-3 py-2"
+          style={{ background: GREY.panel, width: 425 }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={GREY.faint} strokeWidth="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+          </svg>
+          <span className={TYPE.meta} style={{ color: GREY.faint }}>
+            Search SKU or campaign
           </span>
+        </div>
+        {children && (
+          <span className="flex shrink-0 items-center gap-2 whitespace-nowrap">{children}</span>
         )}
       </div>
 

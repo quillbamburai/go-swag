@@ -126,8 +126,8 @@ export const products: Product[] = [
     variant: "Black · Water-resistant",
     thumbnailLabel: "BAG",
     thumbnailSrc: "/products/wash-bag-black.png",
-    warehouseQty: 3,
-    depletionDays: 6,
+    warehouseQty: 0,
+    depletionDays: 0,
     pendingUnits: null,
     pendingArrival: null,
     status: "low-stock",
@@ -196,11 +196,11 @@ export const products: Product[] = [
     variant: "Silver · 10,000mAh",
     thumbnailLabel: "PWR",
     thumbnailSrc: "/products/power-bank-silver.png",
-    warehouseQty: 4,
-    depletionDays: 8,
-    pendingUnits: 100,
-    pendingArrival: "Oct 14",
-    status: "in-production",
+    warehouseQty: 0,
+    depletionDays: 0,
+    pendingUnits: null,
+    pendingArrival: null,
+    status: "low-stock",
     unitPriceGbp: 24,
     leadTimeReadyDate: "Oct 14",
   },
@@ -457,6 +457,21 @@ export const packStreams: string[] = [
 ]
 
 /** Monthly dispatch counts, one value per stream. */
+/**
+ * Departments ordering swag, in bar order within each month group. A mid-size
+ * tech company: the conference events and lifecycle packs in this file belong
+ * to the same business.
+ */
+export const departments = [
+  "Engineering",
+  "Sales",
+  "Marketing",
+  "Customer Success",
+  "People",
+  "Operations",
+] as const
+
+/** Units dispatched per department, per month — one value per department. */
 export const monthlyPacks: { month: string; values: number[] }[] = [
   { month: "Nov 26", values: [91, 80, 134, 105, 85, 63] },
   { month: "Dec 26", values: [242, 201, 281, 312, 255, 170] },
@@ -472,8 +487,8 @@ export const monthlyPacks: { month: string; values: number[] }[] = [
   { month: "Oct 27", values: [248, 218, 312, 276, 235, 172] },
 ]
 
-/** Departmental lines drawn over the bars. Each rises and falls more than once
-    across the year, so the curves sweep rather than drift. */
+/** Pack-type lines drawn over the departmental bars — the chart's second
+    dimension: which kind of pack drove the volume, not which team ordered it. */
 /**
  * Department trend lines, taken directly from the "BUILT — Distribution" frame
  * (Vector 38 / 39 / 40). Each line is a three-segment cubic bezier, stored
@@ -482,14 +497,17 @@ export const monthlyPacks: { month: string; values: number[] }[] = [
  * chart group's 1287 × 161 bounds, with each vector's own y-offset folded in
  * (38 starts 28px down the band, 40 starts 52px down, 39 at the top).
  */
-export const departmentTrend: {
-  department: string
+export const packTypeTrend: {
+  packType: string
   style: "solid" | "light" | "dotted"
+  /** Units per month, sampled from the curve below — the shape is the source. */
+  values: number[]
   /** [x, y] anchors and control points, normalised 0→1. */
   curve: { p0: [number, number]; segs: [number, number, number, number, number, number][] }
 }[] = [
   {
-    department: "Onboarding",
+    packType: "Onboarding",
+    values: [580, 520, 390, 220, 90, 10, 30, 90, 180, 290, 400, 500],
     style: "dotted",
     // Vector 39 — dips to the floor mid-chart, then climbs hard to the ceiling.
     curve: {
@@ -501,7 +519,8 @@ export const departmentTrend: {
     },
   },
   {
-    department: "Promotions",
+    packType: "Promotions",
+    values: [510, 550, 620, 730, 820, 880, 910, 900, 880, 850, 830, 810],
     style: "solid",
     // Vector 38 — the 2px line: rises steeply out of the low left, then flattens.
     curve: {
@@ -513,7 +532,8 @@ export const departmentTrend: {
     },
   },
   {
-    department: "Retirement",
+    packType: "Retirement",
+    values: [510, 540, 590, 660, 720, 740, 730, 650, 560, 470, 400, 360],
     style: "light",
     // Vector 40 — peaks in the middle, then plunges to the lowest point right.
     curve: {

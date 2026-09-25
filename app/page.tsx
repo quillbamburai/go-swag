@@ -13,6 +13,7 @@ import { ProductTable } from "@/components/inventory/product-table"
 import { InsightPanels } from "@/components/inventory/insight-panels"
 import { DistributionHub } from "@/components/distribution/distribution-hub"
 import { EmptyOnboarding } from "@/components/states/empty-onboarding"
+import { ReorderDrawer } from "@/components/drawers/reorder-drawer"
 import { products as initialProducts, campaigns, dispatches } from "@/lib/mock-data"
 import { GREY, TYPE } from "@/components/mid-fidelity"
 import type { Campaign, HubId, Product } from "@/lib/types"
@@ -23,9 +24,17 @@ import type { Campaign, HubId, Product } from "@/lib/types"
  */
 export default function Page() {
   const [activeHub, setActiveHub] = useState<HubId>("inventory")
-  const [products] = useState<Product[]>(initialProducts)
+  const [products, setProducts] = useState<Product[]>(initialProducts)
+  const [reorderProduct, setReorderProduct] = useState<Product | null>(null)
   const [highlightedProductId, setHighlightedProductId] = useState<string | null>(null)
   const [view, setView] = useState<"box" | "table">("box")
+  /** Bumped whenever Distribution is opened, to replay the chart entry. */
+  const [distributionRun, setDistributionRun] = useState(0)
+
+  function handleHubChange(hub: HubId) {
+    if (hub === "distribution") setDistributionRun((n) => n + 1)
+    setActiveHub(hub)
+  }
 
   const sortedProducts = [...products].sort((a, b) => {
     const aOut = a.warehouseQty === 0 ? 0 : 1
@@ -33,6 +42,30 @@ export default function Page() {
     if (aOut !== bOut) return aOut - bOut
     return a.warehouseQty - b.warehouseQty
   })
+
+  /* Only the Sky Blue Crewneck runs the re-order process for now. */
+  function handleStockUp(product: Product) {
+    if (product.id !== "sweatshirt-sky-blue") return
+    setReorderProduct(product)
+  }
+
+  /* Approve is the only commit: the order is placed and the card flips to
+     In Production for the units ordered. Nothing is charged here. */
+  function handleReorderApprove(product: Product, units: number) {
+    setProducts((prev) =>
+      prev.map((p) =>
+        p.id === product.id
+          ? {
+              ...p,
+              status: "in-production" as const,
+              pendingUnits: units,
+              pendingArrival: p.leadTimeReadyDate,
+            }
+          : p,
+      ),
+    )
+    setReorderProduct(null)
+  }
 
   function handleStockUpMissingSku(campaign: Campaign) {
     const target = products.find((p) => p.skuName === campaign.missingSkuName)
@@ -49,7 +82,7 @@ export default function Page() {
           {/* Open layout: no header bar — the top row sits on the canvas.
               Inventory's controls sit beside the search; Distribution renders
               its own beside the hero figure. */}
-          <TopRow activeHub={activeHub} onHubChange={setActiveHub}>
+          <TopRow activeHub={activeHub} onHubChange={handleHubChange}>
             {activeHub === "inventory" && (
               <>
                 <ViewToggle view={view} onViewChange={setView} />
@@ -78,14 +111,14 @@ export default function Page() {
                       <InventoryHub
                         products={products}
                         highlightedProductId={highlightedProductId}
-                        onStockUp={() => {}}
+                        onStockUp={handleStockUp}
                         onSeeStatus={() => {}}
                       />
                     ) : (
                       <ProductTable
                         products={sortedProducts}
                         highlightedProductId={highlightedProductId}
-                        onStockUp={() => {}}
+                        onStockUp={handleStockUp}
                       />
                     )}
                   </div>
@@ -106,6 +139,7 @@ export default function Page() {
           ) : (
             <div className="flex min-h-0 flex-1 flex-col">
               <DistributionHub
+                key={distributionRun}
                 campaigns={campaigns}
                 dispatches={dispatches}
                 onApproveSubstitute={() => {}}
@@ -115,6 +149,12 @@ export default function Page() {
           )}
         </div>
       </div>
+
+      <ReorderDrawer
+        product={reorderProduct}
+        onClose={() => setReorderProduct(null)}
+        onApprove={handleReorderApprove}
+      />
     </div>
   )
 }

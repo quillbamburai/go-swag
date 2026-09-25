@@ -125,24 +125,50 @@ function ForecastPanel() {
             ))}
           </div>
 
-          <div className="relative flex min-h-0 w-full flex-1 items-end justify-between overflow-hidden">
+          {/* Scrolls horizontally: the bars keep a fixed pitch rather than
+              squeezing to fit, so a long forecast stays readable. Bars are 4px
+              on a 7px pitch, so the divider sits at half the series. */}
+          <div className="relative flex min-h-0 w-full flex-1 overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="relative flex h-full items-end gap-[4px]" style={{ paddingTop: 18 }}>
+              {/* Divides delivered from forecast. */}
+              <span
+                className="pointer-events-none absolute bottom-0 z-10"
+                style={{
+                  top: 18,
+                  left: `${(forecastWeeks.length / 2) * 9 - 2}px`,
+                  borderLeft: `1px dashed ${GREY.muted}`,
+                }}
+                aria-hidden
+              />
+              <span
+                className={`pointer-events-none absolute top-0 z-10 -translate-x-1/2 whitespace-nowrap ${TYPE.meta}`}
+                style={{ left: `${(forecastWeeks.length / 2) * 9 - 2}px`, color: GREY.muted }}
+                aria-hidden
+              >
+                Today
+              </span>
+
             {forecastWeeks.map((value, i) => (
               <div
                 key={i}
                 className="group relative flex h-full shrink-0 cursor-default items-end justify-center"
-                style={{ width: 4 }}
+                style={{ width: 5 }}
                 {...bind(i)}
               >
                 <div
-                  className="w-[4px] transition-colors"
+                  className="chart-bar w-[5px] transition-colors"
                   style={{
                     height: `${(value / peak) * 100}%`,
                     background:
                       active === i ? GREY.text : i >= forecastWeeks.length / 2 ? CHART_ACCENT : GREY.bar,
+                    /* 84 bars, so a tight stagger — the sweep reads as one
+                       motion rather than a queue. */
+                    animationDelay: `${i * 8}ms`,
                   }}
                 />
               </div>
             ))}
+            </div>
           </div>
 
           {hovered !== null && (

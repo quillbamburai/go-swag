@@ -36,11 +36,14 @@ export function DataTooltip({
   anchor,
   value,
   detail,
+  delta,
 }: {
   /** The element the tooltip points at. */
   anchor: HTMLElement | null
   value: string
   detail?: string
+  /** Optional movement, e.g. "+0.1%". Positive reads green, negative red. */
+  delta?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
@@ -62,26 +65,54 @@ export function DataTooltip({
     if (top < 8) top = a.bottom + gap
 
     setPos({ top, left })
-  }, [anchor, value, detail])
+  }, [anchor, value, detail, delta])
 
   if (!anchor || typeof document === "undefined") return null
+
+  const negative = delta?.trim().startsWith("-")
 
   return createPortal(
     <div
       ref={ref}
       role="tooltip"
-      className="pointer-events-none fixed z-50 flex flex-col items-center gap-0.5 whitespace-nowrap rounded-lg px-2.5 py-1.5"
+      className="pointer-events-none fixed z-50 flex flex-col gap-2 whitespace-nowrap rounded-2xl px-5 py-4"
       style={{
         top: pos?.top ?? -9999,
         left: pos?.left ?? -9999,
-        background: GREY.text,
-        color: GREY.panel,
+        background: "#FFFFFF",
+        boxShadow: "0 8px 28px rgba(28,28,28,0.12), 0 1px 3px rgba(28,28,28,0.06)",
         opacity: pos ? 1 : 0,
+        transition: "opacity 120ms ease-out",
       }}
     >
-      <span className={TYPE.rowValue}>{value}</span>
+      <span className="flex items-center gap-2">
+        <span
+          className="numeric"
+          style={{
+            fontFamily: "var(--font-family-display)",
+            fontWeight: "var(--font-weight-medium)",
+            fontSize: 20,
+            lineHeight: "24px",
+            letterSpacing: "var(--letter-spacing-tightest)",
+            color: GREY.text,
+          }}
+        >
+          {value}
+        </span>
+        {delta && (
+          <span
+            className={`rounded-full px-2 py-0.5 ${TYPE.columnHeader}`}
+            style={{
+              background: negative ? "var(--color-danger-surface)" : "var(--color-success-surface)",
+              color: negative ? "var(--color-danger)" : "var(--color-success)",
+            }}
+          >
+            {delta}
+          </span>
+        )}
+      </span>
       {detail && (
-        <span className={TYPE.columnHeader} style={{ opacity: 0.7 }}>
+        <span className={TYPE.meta} style={{ color: GREY.muted }}>
           {detail}
         </span>
       )}
