@@ -11,7 +11,7 @@ import {
 import { GREY, TYPE, CHART_ACCENT } from "@/components/mid-fidelity"
 import { DataTooltip, useHoverIndex } from "@/components/data-tooltip"
 import { RangeToggle } from "@/components/inventory/insight-panels"
-import { AlphaFilter, FilterButton } from "@/components/inventory/inventory-hub"
+import { FilterButton } from "@/components/inventory/inventory-hub"
 
 type View = "packs" | "events"
 
@@ -52,6 +52,35 @@ function curvePath(
     d += ` C ${X(c1x)} ${Y(c1y)}, ${X(c2x)} ${Y(c2y)}, ${X(x)} ${Y(y)}`
   }
   return d
+}
+
+/**
+ * From/to month-year range for the chart. Replaces the A-Z sort, which is an
+ * Inventory concept — a time series is bounded by dates, not sorted.
+ */
+function DateRange({ from, to }: { from: string; to: string }) {
+  const Field = ({ value }: { value: string }) => (
+    <button
+      type="button"
+      className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 transition-opacity hover:opacity-70 ${TYPE.control}`}
+      style={{ background: GREY.well, color: GREY.text }}
+    >
+      {value}
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  )
+
+  return (
+    <span className="flex items-center gap-2">
+      <Field value={from} />
+      <span className={TYPE.meta} style={{ color: GREY.muted }}>
+        to
+      </span>
+      <Field value={to} />
+    </span>
+  )
 }
 
 export function DispatchTrend({ onSwitchView }: { onSwitchView: () => void }) {
@@ -145,7 +174,7 @@ function PacksView() {
               {total.toLocaleString()}
             </p>
             <span className="pointer-events-auto mt-2.5 flex items-center gap-2">
-              <AlphaFilter />
+              <DateRange from={monthlyPacks[0].month} to={monthlyPacks[monthlyPacks.length - 1].month} />
               <FilterButton />
             </span>
           </div>

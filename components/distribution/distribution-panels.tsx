@@ -10,6 +10,8 @@ import { Panel } from "@/components/inventory/insight-panels"
 const DONUT_TRACK = "#D5D5D5"
 const DELTA_UP = "#347A32"
 const TIGHT = "var(--font-inter-tight)"
+/** Warm accent shared by the donuts, the share bar and the hold banner. */
+const ACCENT = "var(--color-panel-accent)"
 
 /**
  * Small metric panels. Fixed content only — title, figure, supporting line.
@@ -75,7 +77,7 @@ function Donut({ pct, size = 70 }: { pct: number; size?: number }) {
         cy={r}
         r={radius}
         fill="none"
-        stroke={GREY.text}
+        stroke={ACCENT}
         strokeWidth={stroke}
         strokeDasharray={`${(pct / 100) * circ} ${circ}`}
         transform={`rotate(-90 ${r} ${r})`}
@@ -132,8 +134,8 @@ export function CountryLocationPanel() {
                 key={c.country}
                 style={{
                   height: `${(c.share / total) * 133}px`,
-                  background: GREY.text,
-                  opacity: 1 - i * 0.3,
+                  background: ACCENT,
+                  opacity: [0.25, 0.5, 1][i],
                 }}
               />
             ))}
@@ -147,7 +149,14 @@ export function CountryLocationPanel() {
                 style={{ borderColor: "#E4E4E4" }}
                 {...bind(i)}
               >
-                <span className="mr-3 h-[8px] w-[9px] shrink-0 rounded-full" style={{ background: GREY.text }} />
+                <span
+                  className="mr-3 h-[8px] w-[9px] shrink-0 rounded-full"
+                  style={
+                    i === countryLocation.length - 1
+                      ? { background: GREY.text }
+                      : { background: ACCENT, opacity: [0.25, 0.5][i] }
+                  }
+                />
                 <span
                   className="flex-1"
                   style={{ fontFamily: TIGHT, fontSize: 14, lineHeight: "20px", color: "#000" }}
@@ -228,8 +237,8 @@ export function CarrierPanel({ dispatches }: { dispatches: Dispatch[] }) {
               key={carrier}
               className="cursor-default rounded px-2 py-[6px]"
               style={{
-                background: GREY.text,
-                color: "#FFFFFF",
+                background: "var(--color-tag-carrier)",
+                color: "#000000",
                 fontFamily: TIGHT,
                 fontSize: 11,
                 fontWeight: 500,
@@ -275,7 +284,7 @@ export function ExceptionsPanel({
         type="button"
         onClick={onFixAddresses}
         className={`mt-auto w-full shrink-0 rounded-lg py-2 transition-opacity hover:opacity-80 ${TYPE.control}`}
-        style={{ background: GREY.well, color: GREY.text }}
+        style={{ background: "#000000", color: "#FFFFFF" }}
       >
         Fix addresses
       </button>

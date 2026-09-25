@@ -80,6 +80,7 @@
   --color-bees-wax-50: #fff7e6;
   --color-bees-wax-100: #ffedc7;
   --color-bees-wax-200: #ffe099;
+  --color-bees-wax-250: #eccb5d;
   --color-bees-wax-300: #f2c063;
   --color-bees-wax-400: #e5a338;
   --color-bees-wax-500: #cc841d;
@@ -225,6 +226,13 @@
   --color-success-surface: var(--color-gin-50);
   --color-info: var(--color-aqua-squeeze-600);
   --color-info-surface: var(--color-aqua-squeeze-50);
+
+  /* Metric panels: the warm accent on donuts, share bars and the hold
+     banner, plus the carrier-tag fill. */
+  --color-panel-accent: var(--color-rock-600);
+  --color-tag-carrier: var(--color-bees-wax-250);
+  /* Hold/notice banner — reads as information, not as a panel accent. */
+  --color-notice: var(--color-aqua-squeeze-600);
 
   --radius-sm: 6px;
   --radius-md: 10px;

@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { GREY } from "@/components/mid-fidelity"
 
 /**
@@ -88,39 +87,43 @@ const ACCOUNT: Section[] = [
   },
 ]
 
-export function IconRail() {
-  const [active, setActive] = useState("home")
+/** The only section with a screen behind it; the rest are hover-only for now. */
+const ACTIVE_SECTION = "home"
 
-  const Item = ({ section }: { section: Section }) => (
-    <button
-      type="button"
-      onClick={() => setActive(section.id)}
-      aria-label={section.label}
-      aria-current={active === section.id ? "page" : undefined}
-      title={section.label}
-      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors hover:bg-[#F0F0F0]"
-      style={{ background: active === section.id ? GREY.well : "transparent" }}
-    >
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 22 22"
-        fill="none"
-        stroke="var(--rail-ink)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        style={
-          {
-            "--rail-ink": active === section.id ? GREY.text : GREY.faint,
-          } as React.CSSProperties
-        }
-        aria-hidden
+export function IconRail() {
+  const Item = ({ section }: { section: Section }) => {
+    const isActive = section.id === ACTIVE_SECTION
+    return (
+      <button
+        type="button"
+        aria-label={section.label}
+        aria-current={isActive ? "page" : undefined}
+        title={section.label}
+        /* Only the active section is reachable; the rest have no screen yet,
+           so they show the hover fill but take no click or focus. */
+        disabled={!isActive}
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${
+          isActive ? "" : "cursor-default bg-transparent hover:bg-[#F7F7F7]"
+        }`}
+        style={isActive ? { background: "var(--color-rock-main-800)" } : undefined}
       >
-        {section.path}
-      </svg>
-    </button>
-  )
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 22 22"
+          fill="none"
+          stroke="var(--rail-ink)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ "--rail-ink": isActive ? "#FFFFFF" : GREY.faint } as React.CSSProperties}
+          aria-hidden
+        >
+          {section.path}
+        </svg>
+      </button>
+    )
+  }
 
   return (
     <nav
@@ -141,20 +144,13 @@ export function IconRail() {
       {/* Profile sits last, an avatar rather than another icon slot. */}
       <button
         type="button"
-        onClick={() => setActive("profile")}
         aria-label="Profile"
-        aria-current={active === "profile" ? "page" : undefined}
         title="Profile"
         className="mt-auto flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-opacity hover:opacity-80"
       >
         <span
           className="flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-medium"
-          style={{
-            background: GREY.text,
-            color: GREY.panel,
-            outline: active === "profile" ? `1.5px solid ${GREY.text}` : undefined,
-            outlineOffset: 2,
-          }}
+          style={{ background: GREY.text, color: GREY.panel }}
         >
           DQ
         </span>
