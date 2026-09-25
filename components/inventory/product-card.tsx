@@ -3,6 +3,7 @@ import type { Product } from "@/lib/types"
 import { runOutDate } from "@/lib/depletion"
 import { packMembership } from "@/lib/mock-data"
 import { GREY, GRADIENT, TYPE } from "@/components/mid-fidelity"
+import { asset } from "@/lib/asset"
 
 /**
  * One SKU card: stock line, photo, pack membership, name, actions.
@@ -80,7 +81,7 @@ export function ProductCard({
 
       <div className="relative my-2 min-h-0 flex-1 overflow-hidden rounded-xl">
         <Image
-          src={product.thumbnailSrc}
+          src={asset(product.thumbnailSrc)}
           alt={`${product.skuName} — ${product.variant}`}
           fill
           sizes="240px"

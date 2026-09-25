@@ -6,6 +6,7 @@ import type { Campaign, Product } from "@/lib/types"
 import { dispatchVelocity, forecastWeeks } from "@/lib/mock-data"
 import { GREY, TYPE, ROW_VALUE_WIDTH, CHART_ACCENT } from "@/components/mid-fidelity"
 import { DataTooltip, useHoverIndex } from "@/components/data-tooltip"
+import { asset } from "@/lib/asset"
 
 export function InsightPanels({ products, campaigns }: { products: Product[]; campaigns: Campaign[] }) {
   return (
@@ -312,7 +313,7 @@ function MostPopularPanel({ products }: { products: Product[] }) {
             {...bind(i)}
           >
             <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg" style={{ background: GREY.well }}>
-              <Image src={product.thumbnailSrc} alt="" fill sizes="48px" className="object-contain p-1" />
+              <Image src={asset(product.thumbnailSrc)} alt="" fill sizes="48px" className="object-contain p-1" />
             </div>
 
             <div className="flex min-w-0 flex-1 flex-col gap-1">

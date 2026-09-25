@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { GREY, GRADIENT, TYPE } from "@/components/mid-fidelity"
+import { asset } from "@/lib/asset"
 
 /**
  * Global header: menu, workspace name, [+ New Campaign / Event], [+ Create New Product].
@@ -14,7 +15,7 @@ export function AppHeader() {
         {/* Box mark carries the brand; "plus" names the tier beside it. */}
         <h1 className="flex items-center gap-2.5">
           <Image
-            src="/logo/swag-logo-box.png"
+            src={asset("/logo/swag-logo-box.png")}
             alt="Go Swag"
             width={128}
             height={128}

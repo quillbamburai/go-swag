@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { GREY } from "@/components/mid-fidelity"
+import { asset } from "@/lib/asset"
 
 /**
  * Left rail. Workflow sections at the top, account items below a divider,
@@ -134,7 +135,7 @@ export function IconRail() {
     >
       {/* Brand mark heads the rail; the gap below separates it from the nav. */}
       <Image
-        src="/logo/swag-logo-box.png"
+        src={asset("/logo/swag-logo-box.png")}
         alt="Go Swag"
         width={128}
         height={128}

@@ -2,6 +2,7 @@ import Image from "next/image"
 import type { Product } from "@/lib/types"
 import { runOutDate } from "@/lib/depletion"
 import { GREY, GRADIENT, TYPE } from "@/components/mid-fidelity"
+import { asset } from "@/lib/asset"
 
 /**
  * Table view of the same SKUs. Mid-fidelity greyscale pass. Not final styling.
@@ -51,7 +52,7 @@ export function ProductTable({
                 <td className="py-2.5">
                   <div className="flex items-center gap-3">
                     <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg">
-                      <Image src={product.thumbnailSrc} alt="" fill sizes="36px" className="object-contain" />
+                      <Image src={asset(product.thumbnailSrc)} alt="" fill sizes="36px" className="object-contain" />
                     </div>
                     <span className={TYPE.itemName} style={{ color: GREY.text }}>{product.skuName}</span>
                   </div>
