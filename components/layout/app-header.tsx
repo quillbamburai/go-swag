@@ -11,25 +11,28 @@ export function AppHeader() {
   return (
     <header className="flex shrink-0 items-center justify-between gap-4 px-5 py-3" style={{ background: GREY.panel }}>
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          aria-label="Open menu"
-          className="flex h-8 w-8 items-center justify-center rounded-lg"
-          style={{ background: GREY.well, color: GREY.text }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M3 6h18M3 12h18M3 18h18" strokeLinecap="round" />
-          </svg>
-        </button>
-        <h1 className="flex items-center gap-1.5">
+        {/* Box mark carries the brand; "plus" names the tier beside it. */}
+        <h1 className="flex items-center gap-2.5">
           <Image
-            src="/logo/go-swag-primary-logo-dark-4x.png"
+            src="/logo/swag-logo-box.png"
             alt="Go Swag"
-            width={2540}
-            height={777}
+            width={128}
+            height={128}
             priority
-            className="h-[22px] w-auto"
+            className="h-11 w-11 rounded-xl"
           />
+          <span
+            style={{
+              fontFamily: "var(--font-family-display)",
+              fontWeight: "var(--font-weight-semibold)",
+              fontSize: "var(--text-h6-size)",
+              lineHeight: "var(--text-h6-line-height)",
+              letterSpacing: "var(--letter-spacing-normal)",
+              color: GREY.text,
+            }}
+          >
+            plus
+          </span>
           <span
             aria-label="Plus"
             className="relative -top-[3px] bg-clip-text"
