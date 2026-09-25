@@ -9,7 +9,7 @@ import { GREY, GRADIENT, TYPE } from "@/components/mid-fidelity"
  */
 export function AppHeader() {
   return (
-    <header className="flex shrink-0 items-center justify-between gap-4 px-5 py-3" style={{ background: GREY.panel }}>
+    <header className="flex shrink-0 items-center justify-between gap-4 py-3 pl-[26px] pr-5" style={{ background: GREY.panel }}>
       <div className="flex items-center gap-3">
         {/* Box mark carries the brand; "plus" names the tier beside it. */}
         <h1 className="flex items-center gap-2.5">
