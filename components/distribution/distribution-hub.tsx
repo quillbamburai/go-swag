@@ -53,8 +53,10 @@ export function DistributionHub({
           </div>
         </div>
 
-        {/* Right column — hold banner above the metric panels, same width. */}
-        <div className="flex min-h-0 flex-col gap-3">
+        {/* Right column — hold banner above the metric panels, same width.
+            -mt-6 lifts it so the banner sits 24px below the top menu bar,
+            independent of the chart column's own top alignment. */}
+        <div className="-mt-6 flex min-h-0 flex-col gap-3">
           {held && (
             <div className="shrink-0">
               <PackHoldAlert

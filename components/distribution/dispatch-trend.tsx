@@ -130,7 +130,7 @@ function PacksView() {
             Dispatches over time
           </h2>
           {/* Controls sit level with the figure, per the v4 frame. */}
-          <div className="mb-[11px] flex items-center gap-4">
+          <div className="mb-[11px] flex items-center gap-16">
             <p
               className="numeric"
               style={{

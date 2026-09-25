@@ -49,7 +49,10 @@ export default function Page() {
         <IconRail />
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex items-center justify-between gap-4 pb-4">
+          {/* mr-[336px] discounts the right column (320px + 16px gap) so the
+              switcher centres between the rail and the metric panels, not the
+              viewport. */}
+          <div className="mr-[336px] flex items-center justify-between gap-4 pb-2.5">
             <div className="flex-1" />
             <HubSwitcher activeHub={activeHub} onHubChange={setActiveHub} />
             {/* Distribution renders A-Z and Filter beside its hero figure. */}
