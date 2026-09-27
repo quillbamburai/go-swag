@@ -113,7 +113,9 @@ function PacksView() {
   const [line, setLine] = useState<number | null>(null)
   const total = 1837
   const dataMax = Math.max(...monthlyPacks.flatMap((m) => m.values))
-  const peak = Math.ceil((dataMax * 1.02) / 50) * 50
+  /* 12% headroom so the tallest bar sits clear of the plot ceiling rather
+     than touching it — the axis reads as a scale, not a lid. */
+  const peak = Math.ceil((dataMax * 1.12) / 50) * 50
 
   /** In the design the line band is 161px of a 302px chart, starting 28px in —
       so the curves occupy the middle 53%, running through the bars. */
